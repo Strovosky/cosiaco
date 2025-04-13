@@ -2,7 +2,7 @@ from django.urls import path
 from .views import obtener_usuario_api_view, crear_usuario_api_view, obtener_todos_los_usuarios_api_view, actualizar_partial_usuario_api_view, desactivar_usuario_api_view, login_usuario, logout_usuario
 from .views import CrearUsuarioAPIView, ObtenerUsuarioClassView, ObtenerTodosLosUsuariosAPIView, ObtenerTodosLosUsuariosGenericView, ActualizarParcialUsuarioClassView, ActualizarParcialUsuarioGeneriView, DesactivarUsuarioClassView, LoginUsuarioClassView, LogoutClassView
 from .views import CrearCosiaco
-from .views import CrearUsuarioGenericAPIView, ObtenerUsuarioGenericView, DesactivarUsuarioGenericView, DestruirCosiacoGeneric, CrearCategoriaGeneric, DestruirCategoriaGeneric
+from .views import CrearUsuarioGenericAPIView, ObtenerUsuarioGenericView, DesactivarUsuarioGenericView, DestruirCosiacoGeneric, CrearCategoriaGeneric, DestruirCategoriaGeneric, CrearEstrellaGeneric, ObtenerCategoriaGeneric, ObtenerCosiacoGeneric
 # RestFramework imports
 
 
@@ -30,9 +30,13 @@ urlpatterns = [
 
     path(route="crear_cosiaco_generic_view/", view=CrearCosiaco.as_view(), name="crear_cosiaco"),
     path(route="destruir_cosiaco_generic_view/<int:pk>/", view=DestruirCosiacoGeneric.as_view(), name="destruir_cosiaco_generic"),
+    path(route="obtener_cosiaco_generic/<int:pk>/", view=ObtenerCosiacoGeneric.as_view(), name="obtener_cosiaco_generic"),
 
     path(route="crear_categoria_generic/", view=CrearCategoriaGeneric.as_view(), name="crear_categoria_generic"),
     path(route="destruir_categoria_generic/<int:pk>/", view=DestruirCategoriaGeneric.as_view(), name="destruir_categoria_generic"),
+    path(route="obtener_categoria_generic/<str:nombre>/", view=ObtenerCategoriaGeneric.as_view(), name="obtener_categoria_generic"),
+
+    path(route="crear_estrella_generic/", view=CrearEstrellaGeneric.as_view(), name="crear_estrella_generic"),
 ]
 
 

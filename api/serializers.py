@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from usuario.models import Usuario
-from los_cosiacos.models import Cosiaco, Categoria
+from los_cosiacos.models import Cosiaco, Categoria, Estrella, Opinion, Like
 
 
 
@@ -53,9 +53,10 @@ class CosiacoSerializador(ModelSerializer):
         fields = [
             "id",
             "creador",
+            "categoria",
             "nombre",
             "descripcion",
-            "votos",
+            "fecha_creacion",
             "mostrar_estrellas"
         ]
 
@@ -66,6 +67,11 @@ class CosiacoSerializador(ModelSerializer):
             descripcion = validated_data["descripcion"]
         except:
             cosiaco = request.user.cosiaco_set.create(nombre=validated_data["nombre"])
+            try:
+                categoria = Categoria.objects.get(id=int(request.data.get("categoria")))
+                cosiaco.categoria.add(categoria)
+            except:
+                pass
         else:
             cosiaco = request.user.cosiaco_set.create(nombre=validated_data["nombre"], descripcion=descripcion)
         return cosiaco
@@ -77,5 +83,22 @@ class CategoriaSerializador(ModelSerializer):
     class Meta:
         model = Categoria
         fields = [
+            "id",
             "nombre"
         ]
+
+
+class EstrellaSerializador(ModelSerializer):
+    """Ester serializador manejara la informacion del modelo Estrella"""
+
+    class Meta:
+        model = Estrella
+        fields = [
+            "creador",
+            "cosiaco",
+            "numero"
+        ]
+
+
+
+

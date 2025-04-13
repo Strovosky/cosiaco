@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
-from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSerializador
+from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSerializador, EstrellaSerializador
 from usuario.models import Usuario
-from los_cosiacos.models import Cosiaco, Categoria
+from los_cosiacos.models import Cosiaco, Categoria, Estrella, Opinion, Like
 from django.db.models import Q
 
 # Rest Framework imports
@@ -239,7 +239,7 @@ def login_usuario(request):
                 
                 token, created = Token.objects.get_or_create(user=usuario)
 
-                return Response({"token":token.key}, status=status.HTTP_201_CREATED)
+                return Response({"token":token.key, "id":usuario.id}, status=status.HTTP_201_CREATED)
 
 
 class LoginUsuarioClassView(APIView):
@@ -255,7 +255,7 @@ class LoginUsuarioClassView(APIView):
             return Response({"error autorizacion":"Las credenciales no son correctas"}, status=status.HTTP_401_UNAUTHORIZED)
         else:
             token, created = Token.objects.get_or_create(user=usuario)
-            return Response({"token":token.key}, status=status.HTTP_200_OK)
+            return Response({"token":token.key, "id":usuario.id}, status=status.HTTP_200_OK)
         
 
 
@@ -308,6 +308,18 @@ class DestruirCosiacoGeneric(DestroyAPIView):
     permission_classes = [IsAuthenticated]
 
 
+
+class ObtenerCosiacoGeneric(RetrieveAPIView):
+
+    queryset = Cosiaco.objects.all()
+    serializer_class = CosiacoSerializador
+    lookup_field = "pk"
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+
 class CrearCategoriaGeneric(CreateAPIView):
 
     queryset = Categoria.objects.all()
@@ -327,6 +339,24 @@ class DestruirCategoriaGeneric(DestroyAPIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
 
+class ObtenerCategoriaGeneric(RetrieveAPIView):
+    """Esta vista obtendra una categoria"""
 
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializador
+    lookup_field = "nombre"
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+
+class CrearEstrellaGeneric(CreateAPIView):
+    """Esta vista creara la estrella que se le de a los cosiacos"""
+
+    queryset = Estrella.objects.all()
+    serializer_class = EstrellaSerializador
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
