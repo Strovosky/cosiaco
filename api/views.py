@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
-#from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSerializador
-#from usuario.models import Usuario
-#from los_cosiacos.models import Cosiaco, Categoria
+from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSerializador
+from usuario.models import Usuario
+from los_cosiacos.models import Cosiaco, Categoria
 from django.db.models import Q
 
 # Rest Framework imports
@@ -21,10 +21,7 @@ from rest_framework.mixins import DestroyModelMixin
 # Create your views here.
 
 
-def temp_view(request):
-    return Response({"msm":"test"})
 
-"""
 @api_view(["POST"])
 def crear_usuario_api_view(request):
     
@@ -329,7 +326,7 @@ class DestruirCategoriaGeneric(DestroyAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, IsAdminUser]
 
-"""
+
 
 
 
