@@ -19,6 +19,7 @@ class Cosiaco(Model):
     "Este será el modelos de los cosiacos"
 
     creador = ForeignKey(verbose_name=_("creador"), to=Usuario, null=True, on_delete=SET_NULL)
+    categoria = ManyToManyField(verbose_name=_("categoria"), to=Categoria)
 
     nombre = CharField(verbose_name=("nombre"), max_length=50)
     descripcion = CharField(verbose_name=_("descripción"), max_length=500, null=True, blank=True)
@@ -57,7 +58,7 @@ class Estrella(Model):
         return super().save(*args, **kwargs)
     
     def __str__(self):
-        return self.numero
+        return f"{self.numero}"
 
 
 class Opinion(Model):
