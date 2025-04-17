@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+{% block head %}
   <head>
 
     <meta charset="utf-8">
@@ -13,7 +14,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <title>Cosiacos</title>
+    <title>{% block tittle %}Cosiacos{% endblock tittle %}</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'los_cosiacos/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -33,6 +34,7 @@ https://templatemo.com/tm-579-cyborg-gaming
 
 -->
   </head>
+{% endblock head %}  
 
 <body>
 
@@ -71,7 +73,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
                         <li><a href="index.html" class="active">Home</a></li>
-                        <li><a href="browse.html">Browse</a></li>
+                        <li><a href="{% url 'los_cosiacos_urls:browse' %}">Browse</a></li>
                         <li><a href="details.html">Details</a></li>
                         <li><a href="streams.html">Streams</a></li>
                         <li><a href="profile.html">Profile <img src="{% static 'los_cosiacos/images/profile-header.jpg' %}" alt=""></a></li>
@@ -268,6 +270,7 @@ https://templatemo.com/tm-579-cyborg-gaming
     </div>
   </div>
   
+  {% block footer %}
   <footer>
     <div class="container">
       <div class="row">
@@ -279,6 +282,7 @@ https://templatemo.com/tm-579-cyborg-gaming
       </div>
     </div>
   </footer>
+  {% endblock footer %}
 
 
   <!-- Scripts -->

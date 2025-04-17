@@ -11,6 +11,9 @@ class VistaLogin(View):
 
     def get(self, request, *args, **kwargs):
         return render(request, "usuario/login.html", {})
+    
+    def post(self, request, *args, **kwargs):
+        pass
 
 
 
