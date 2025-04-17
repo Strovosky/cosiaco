@@ -1,8 +1,8 @@
 from django.urls import path
 from .views import obtener_usuario_api_view, crear_usuario_api_view, obtener_todos_los_usuarios_api_view, actualizar_partial_usuario_api_view, desactivar_usuario_api_view, login_usuario, logout_usuario
-from .views import CrearUsuarioAPIView, ObtenerUsuarioClassView, ObtenerTodosLosUsuariosAPIView, ObtenerTodosLosUsuariosGenericView, ActualizarParcialUsuarioClassView, ActualizarParcialUsuarioGeneriView, DesactivarUsuarioClassView, LoginUsuarioClassView, LogoutClassView
+from .views import CrearUsuarioAPIView, ObtenerUsuarioClassView, ObtenerTodosLosUsuariosAPIView, ObtenerTodosLosUsuariosGenericView, ActualizarParcialUsuarioClassView, ActualizarParcialUsuarioGeneriView, DesactivarUsuarioClassView, LoginUsuarioClassView, LogoutClassView, CrearOpinionGenericView, DestruirOpinionGenericView
 from .views import CrearCosiaco
-from .views import CrearUsuarioGenericAPIView, ObtenerUsuarioGenericView, DesactivarUsuarioGenericView, DestruirCosiacoGeneric, CrearCategoriaGeneric, DestruirCategoriaGeneric, CrearEstrellaGeneric, ObtenerCategoriaGeneric, ObtenerCosiacoGeneric
+from .views import CrearUsuarioGenericAPIView, ObtenerUsuarioGenericView, DesactivarUsuarioGenericView, DestruirCosiacoGeneric, CrearCategoriaGeneric, DestruirCategoriaGeneric, CrearEstrellaGeneric, ObtenerCategoriaGeneric, ObtenerCosiacoGeneric, CrearDestruirLikeGenericView
 # RestFramework imports
 
 
@@ -23,6 +23,7 @@ urlpatterns = [
     path(route="desactivar_usuario/<int:pk>/", view=desactivar_usuario_api_view, name="desactivar_usuario"),
     path(route="desactivar_usuario_class_view/<int:pk>/", view=DesactivarUsuarioClassView.as_view(), name="desactivar_usuario_class_view"),
     path(route="desactivar_usuario_generic_view/", view=DesactivarUsuarioGenericView.as_view(), name="desactivar_usuario_generic_view"),
+
     path(route="login_usuario/", view=login_usuario, name="login_usuario"),
     path(route="login_usuario_class_view/", view=LoginUsuarioClassView.as_view(), name="login_usuario_class_view"),
     path(route="logout_usuario/", view=logout_usuario, name="logout_usuario"),
@@ -37,6 +38,12 @@ urlpatterns = [
     path(route="obtener_categoria_generic/<str:nombre>/", view=ObtenerCategoriaGeneric.as_view(), name="obtener_categoria_generic"),
 
     path(route="crear_estrella_generic/", view=CrearEstrellaGeneric.as_view(), name="crear_estrella_generic"),
+
+    path(route="crear_opinion_generic/", view=CrearOpinionGenericView.as_view(), name="crear_opinion_generic"),
+    path(route="destruir_opinion_generic/<int:pk>/", view=DestruirOpinionGenericView.as_view(), name="destruir_opinion_generic"),
+
+    path(route="crear_like_generic/", view=CrearDestruirLikeGenericView.as_view(), name="crear_like_generic"),
+    path(route="destruir_like_generic/<int:pk>/", view=CrearDestruirLikeGenericView.as_view(), name="destruir_like_generic"),
 ]
 
 

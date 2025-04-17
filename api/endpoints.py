@@ -40,5 +40,12 @@ destruir_categoria_generic = base_endpoint + "destruir_categoria_generic/"
 obtener_categoria_generic = base_endpoint + "obtener_categoria_generic/"
 
 ##### Estrella Endpoints ######
-
 crear_estrella_generic = base_endpoint + "crear_estrella_generic/"
+
+##### Opinion Endpoints #######
+crear_opinion_generic = base_endpoint + "crear_opinion_generic/"
+destruir_opinion_generic = base_endpoint + "destruir_opinion_generic/"
+
+##### Like Endpoints ######
+crear_like_generic = base_endpoint + "crear_like_generic/"
+destruir_like_generic = base_endpoint + "destruir_like_generic/"

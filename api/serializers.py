@@ -100,5 +100,30 @@ class EstrellaSerializador(ModelSerializer):
         ]
 
 
+class OpinionSerializador(ModelSerializer):
+    """Este serializador manejara la informacion del modelo Opinion"""
 
+    class Meta:
+        model = Opinion
+        fields = [
+            "id",
+            "creador",
+            "cosiaco",
+            "descripcion",
+            "fecha_creacion"
+        ]
+
+
+class LikeSerializador(ModelSerializer):
+    """
+    Este serializador manejará la información del modelo Like
+    """
+
+    class Meta:
+        model = Like
+        fields = [
+            "id",
+            "creador",
+            "opinion"
+        ]
 

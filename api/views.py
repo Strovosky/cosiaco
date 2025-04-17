@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSerializador, EstrellaSerializador
+from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSerializador, EstrellaSerializador, OpinionSerializador, LikeSerializador
 from usuario.models import Usuario
 from los_cosiacos.models import Cosiaco, Categoria, Estrella, Opinion, Like
 from django.db.models import Q
@@ -16,7 +16,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
 
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView, UpdateAPIView, DestroyAPIView, GenericAPIView
-from rest_framework.mixins import DestroyModelMixin
+from rest_framework.mixins import DestroyModelMixin, CreateModelMixin
 
 # Create your views here.
 
@@ -360,3 +360,42 @@ class CrearEstrellaGeneric(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class CrearOpinionGenericView(CreateAPIView):
+    """Esta vista ayudará a crear una opinion"""
+
+    queryset = Opinion.objects.all()
+    serializer_class = OpinionSerializador
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class DestruirOpinionGenericView(DestroyAPIView):
+    """ESta vista destruira opiniones"""
+
+    queryset = Opinion.objects.all()
+    serializer_class = OpinionSerializador
+    lookup_field = "pk"
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class CrearDestruirLikeGenericView(
+    CreateModelMixin,
+    DestroyModelMixin,
+    GenericAPIView
+):
+    """
+    Esta vista creara y destruira los likes que un usuario le de a un post.
+    """
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializador
+    lookup_field = "pk"
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+        

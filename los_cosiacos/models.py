@@ -65,6 +65,7 @@ class Opinion(Model):
     """Este será el modelo para las opiniones que den los usuarios de un cosiaco."""
 
     creador = ForeignKey(verbose_name=_("creador"), to=Usuario, null=True, on_delete=SET_NULL)
+    cosiaco = ForeignKey(verbose_name="cosiaco", to=Cosiaco, on_delete=CASCADE)
 
     descripcion = CharField(verbose_name=_("descripción"), max_length=500)
     fecha_creacion = DateTimeField(verbose_name=_("fecha de creación"), auto_now_add=True)
