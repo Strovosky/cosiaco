@@ -1,195 +1,74 @@
 {% load static %}
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
   <head>
-
+  	<title>Login Cosiaco</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Mira la opinión de cualquier cosa antes de decidirte.">
-    <meta name="robots" content="index, follow">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
 
-    <title>Cosiaco - Login</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	
+	<link rel="stylesheet" href="{% static 'usuario/css/style.css' %}">
 
-    <!-- Bootstrap core CSS -->
-    <link href="{% static 'usuario/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+	</head>
+	<body style="background-color:#1e1e1e;">
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-6 text-center mb-5">
+					<h2 class="heading-section">Login Cosiaco</h2>
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				{% if messages %}
+				<ul class="messages">
+				  {% for message in messages %}
+				  <li>{{message}}</li>
+				  {% endfor %}
+				</ul>
+				{% endif %}
+				<div class="col-md-6 col-lg-4">
+					<div class="login-wrap py-5">
+		      	<div class="img d-flex align-items-center justify-content-center" style="background-image: url({% static 'los_cosiacos/images/popular-02.jpg' %});"></div>
+		      	<h3 class="text-center mb-0">Bienvenido</h3>
+		      	<p class="text-center">Ingresa entrando la información de abajo</p>
+						<form action="#" class="login-form">
+							{% csrf_token %}
+		      		<div class="form-group">
+		      			<div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-user"></span></div>
+		      			<input type="email" name="login_correo" class="form-control" placeholder="Correo" required>
+		      		</div>
+	            <div class="form-group">
+	            	<div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-lock"></span></div>
+	              <input type="password" name="login_contraseña" class="form-control" placeholder="Contraseña" required>
+	            </div>
+	            <div class="form-group d-md-flex">
+								<div class="w-100 text-md-right">
+									<a href="#">Olvidé mi contraseña</a>
+								</div>
+	            </div>
+	            <div class="form-group">
+	            	<button type="submit" name="btn_login" class="btn form-control btn-primary rounded submit px-3">Empezar a Cosiacar</button>
+	            </div>
+	          </form>
+	          <div class="w-100 text-center mt-4 text">
+	          	<p class="mb-0">No tienes una cuenta?</p>
+		          <a href="#">Registrate</a>
+	          </div>
+	        </div>
+				</div>
+			</div>
+		</div>
+	</section>
 
+	<script src="{% static 'usuario/js/jquery.min.js' %}"></script>
+  <script src="{% static 'usuario/js/popper.js' %}"></script>
+  <script src="{% static 'usuario/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'usuario/js/main.js' %}"></script>
 
-    <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="{% static 'usuario/css/fontawesome.css' %}">
-    <link rel="stylesheet" href="{% static 'usuario/css/templatemo-cyborg-gaming.css' %}">
-    <link rel="stylesheet" href="{% static 'usuario/css/owl.css' %}">
-    <link rel="stylesheet" href="{% static 'usuario/css/animate.css' %}">
-    <link rel="stylesheet" href="{% static 'usuario/css/css_login.css' %}">
-    <link rel="stylesheet"href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
-<!--
-
-TemplateMo 579 Cyborg Gaming
-
-https://templatemo.com/tm-579-cyborg-gaming
-
--->
-  </head>
-
-<body>
-
-  <!-- ***** Preloader Start ***** -->
-  <div id="js-preloader" class="js-preloader">
-    <div class="preloader-inner">
-      <span class="dot"></span>
-      <div class="dots">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-  </div>
-  <!-- ***** Preloader End ***** -->
-
-  <!-- ***** Header Area Start ***** -->
-  <header class="header-area header-sticky">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <nav class="main-nav">
-                    <!-- ***** Logo Start ***** -->
-                    <a href="index.html" class="logo">
-                        <img src="{% static 'usuario/images/logo.png' %}" alt="">
-                    </a>
-                    <!-- ***** Logo End ***** -->
-                    <!-- ***** Search End ***** -->
-                    <div class="search-input">
-                      <form id="search" action="#">
-                        <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                        <i class="fa fa-search"></i>
-                      </form>
-                    </div>
-                    <!-- ***** Search End ***** -->
-                    <!-- ***** Menu Start ***** -->
-                    <ul class="nav">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="browse.html">Browse</a></li>
-                        <li><a href="details.html">Details</a></li>
-                        <li><a href="streams.html" class="active">Streams</a></li>
-                        <li><a href="profile.html">Profile <img src="{% static 'usuario/images/profile-header.jpg' %}" alt=""></a></li>
-                    </ul>   
-                    <a class='menu-trigger'>
-                        <span>Menu</span>
-                    </a>
-                    <!-- ***** Menu End ***** -->
-                </nav>
-            </div>
-        </div>
-    </div>
-  </header>
-  <!-- ***** Header Area End ***** -->
-
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="page-content">
-
-          <!-- ***** Featured Games Start ***** -->
-          <div class="row">
-            <div class="section">
-              <div class="container">
-                <div class="row full-height justify-content-center">
-                  <div class="col-12 text-center align-self-center py-5">
-                    <div class="section pb-5 pt-5 pt-sm-2 text-center">
-                      <h6 class="mb-0 pb-3"><span>Entra </span><span>Registro</span></h6>
-                            <input class="checkbox" type="checkbox" id="reg-log" name="reg-log"/>
-                            <label for="reg-log"></label>
-                      <div class="card-3d-wrap mx-auto">
-                        <div class="card-3d-wrapper">
-                          <div class="card-front">
-                            <div class="center-wrap">
-                              <!--Login Form-->
-                              <form method="post" action="#" >
-                                {% csrf_token %}
-                                  <div class="section text-center">
-                                    <h4 class="mb-4 pb-3">Entra</h4>
-                                    <div class="form-group">
-                                      <input type="email" name="login_correo" class="form-style" placeholder="Tu correo" id="login_correo" autocomplete="on" required>
-                                      <i class="input-icon uil uil-at"></i>
-                                    </div>	
-                                    <div class="form-group mt-2">
-                                      <input type="password" name="login_contraseña" class="form-style" placeholder="Tu contraseña" id="login_contraseña" autocomplete="off" required>
-                                      <i class="input-icon uil uil-lock-alt"></i>
-                                    </div>
-                                    <button type="submit" name="btn_enviar_login" href="#" class="btn mt-4">Enviar</button>
-                                                <p class="mb-0 mt-4 text-center"><a href="#0" class="link">Olvidaste tu contraseña?</a></p>
-                                  </div>
-                                  <!--End Login From-->
-                              </form>
-                                </div>
-                              </div>
-                          <div class="card-back">
-                            <div class="center-wrap">
-                              <!--Signup Form-->
-                              <form method="post" action="#">
-                                {% csrf_token %}
-                                <div class="section text-center">
-                                  <h4 class="mb-4 pb-3">Registro</h4>
-                                  <div class="form-group">
-                                    <input type="text" name="registro_nombre_usuario" class="form-style" placeholder="Tu Nombre de usuario" id="nombre_usuario" autocomplete="off" required>
-                                    <i class="input-icon uil uil-user"></i>
-                                  </div>	
-                                  <div class="form-group mt-2">
-                                    <input type="email" name="registro_correo" class="form-style" placeholder="Tu correo electrónico" id="correo_electronico" autocomplete="on" required>
-                                    <i class="input-icon uil uil-at"></i>
-                                  </div>	
-                                  <div class="form-group mt-2">
-                                    <input type="password" name="registro_contraseña" class="form-style" placeholder="Tu contraseña" id="registro_contraseña" autocomplete="off" required>
-                                    <i class="input-icon uil uil-lock-alt"></i>
-                                  </div>
-                                  <button type="submit" href="#" class="btn mt-4">Registrarme</button>
-                                    </div>
-                              </form>
-                                  <!--End Signup Form-->
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                </div>
-            </div>
-            <!--End Login /Signup Form-->
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <footer>
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <p>Copyright © 2036 <a href="#">Cyborg Gaming</a> Company. All rights reserved. 
-          
-          <br>Design: <a href="https://templatemo.com" target="_blank" title="free CSS templates">TemplateMo</a></p>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-
-  <!-- Scripts -->
-  <!-- Bootstrap core JavaScript -->
-  <script src="{% static 'usuario/vendor/jquery/jquery.min.js' %}"></script>
-  <script src="{% static 'usuario/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
-
-  <script src="{% static 'usuario/js/isotope.min.js' %}"></script>
-  <script src="{% static 'usuario/js/owl-carousel.js' %}"></script>
-  <script src="{% static 'usuario/js/tabs.js' %}"></script>
-  <script src="{% static 'usuario/js/popup.js' %}"></script>
-  <script src="{% static 'usuario/js/custom.js' %}"></script>
-
-
-  </body>
-
+	</body>
 </html>
+

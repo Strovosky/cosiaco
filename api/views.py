@@ -37,6 +37,12 @@ def crear_usuario_api_view(request):
 class CrearUsuarioAPIView(APIView):
 
     def post(self, request):
+        print("Are you even working?")
+        print(request.data.get("correo"))
+        if Usuario.objects.filter(correo=request.data.get("correo")).count() > 0:
+            return Response({"error_existencia":"El usuario ya existe con ese correo."})
+        elif Usuario.objects.filter(correo=request.data.get("usuario")).count() > 0:
+            return Response({"error_existencia":"El usuario ya existe con ese usuario."})
         usuario_serializado = UsuarioSerializador(data=request.data, many=False)
         if usuario_serializado.is_valid(raise_exception=True):
             usuario_serializado.save()
