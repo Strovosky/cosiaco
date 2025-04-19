@@ -8,6 +8,8 @@ login_usuario_class_view = base_endpoint + "login_usuario_class_view/"
 logout_usuario = base_endpoint + "logout_usuario/"
 logout_class_view = base_endpoint + "logout_class_view/"
 
+verificar_token_usuario = base_endpoint + "verificar_token_usuario/"
+
 crear_usuario = base_endpoint + "crear_usuario/"
 crear_usuario_class_view = base_endpoint + "crear_usuario_class_view/"
 crear_usuario_generic_api_view = base_endpoint + "crear_usuario_generic_api_view/"

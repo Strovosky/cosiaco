@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSerializador, EstrellaSerializador, OpinionSerializador, LikeSerializador
+from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSerializador, EstrellaSerializador, OpinionSerializador, LikeSerializador, UsuarioLoginSerializador
 from usuario.models import Usuario
 from los_cosiacos.models import Cosiaco, Categoria, Estrella, Opinion, Like
 from django.db.models import Q
@@ -251,15 +251,13 @@ def login_usuario(request):
 class LoginUsuarioClassView(APIView):
 
     def post(self, request):
-        if not request.data["correo"] or not request.data["password"]:
-            return Response({"credenciales insuficientes":"Se nececita el correo y contraseña para hacer el login"}, status=status.HTTP_400_BAD_REQUEST)
-        usuario = Usuario.objects.filter(Q(correo=request.data.get("correo")) & Q(is_active=False))
-        if usuario.count() > 1:
-            return Response({"usuario desactivado":"El usuario debe ser activado antes de hacer un login"}, status=status.HTTP_401_UNAUTHORIZED)
-        usuario = authenticate(request, correo=request.data.get("correo"), password=request.data.get("password"))
-        if usuario is None:
-            return Response({"error autorizacion":"Las credenciales no son correctas"}, status=status.HTTP_401_UNAUTHORIZED)
+        usuario_serializado = UsuarioLoginSerializador(data=request.data)
+        if not usuario_serializado.is_valid(raise_exception=True):
+            return Response(usuario_serializado.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
+            usuario = authenticate(request, correo=usuario_serializado._validated_data["correo"], password=usuario_serializado.validated_data["password"])
+            if usuario is None:
+                return Response(usuario_serializado.errors, status=status.HTTP_401_UNAUTHORIZED)
             token, created = Token.objects.get_or_create(user=usuario)
             return Response({"token":token.key, "id":usuario.id}, status=status.HTTP_200_OK)
         
@@ -291,9 +289,27 @@ class LogoutClassView(APIView):
             return Response({"error token":"El token que se proveyó no existe."}, status=status.HTTP_400_BAD_REQUEST)
         else:
             token.delete()
-            return Response({"token destruido":"El token fue destruido"}, status=status.HTTP_200_OK) 
+            return Response({"token destruido":"El usuario cerro cesión exitosamente"}, status=status.HTTP_200_OK) 
 
 
+class VerificadorTokenYAutenticacion(APIView):
+    """
+    Esta vista verificará si el token actual es valido y si el usuario esta autenticado.
+    """
+
+    def post(self, request, *args, **kwargs):
+        try:
+            token_str = request.headers["Authorization"].split(" ")[1]
+        except:
+            return Response({"error header":"El header no se pasó apropiadamente"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            token = Token.objects.select_related("user").filter(key=token_str).first()
+            if not token:
+                return Response({"token_invalido":"El token no es valido"}, status=status.HTTP_401_UNAUTHORIZED)
+            if token.user.is_authenticated:
+                return Response({"usuario_valido":"El token es valido y el usuario esta autenticado"}, status=status.HTTP_200_OK)
+            return Response({"usuario_error":"El usuario no esta autenticado"}, status=status.HTTP_401_UNAUTHORIZED)
+        
 
 ##### Cosiaco Views #######
 

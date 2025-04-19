@@ -1,5 +1,6 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, Serializer, EmailField, CharField, ValidationError
 from usuario.models import Usuario
+from django.contrib.auth import get_user_model
 from los_cosiacos.models import Cosiaco, Categoria, Estrella, Opinion, Like
 
 
@@ -44,6 +45,20 @@ class UsuarioSerializador(ModelSerializer):
         instance.save()
         return instance
     
+
+class UsuarioLoginSerializador(Serializer):
+
+    correo = EmailField(max_length=50, min_length=5, required=True)
+    password = CharField(max_length=30, min_length=5, write_only=True, required=True)
+
+    def validate_correo(self, value):
+        Usuario = get_user_model()
+        if not Usuario.objects.filter(correo=value).exists():
+            raise ValidationError("No existe un usuario con este correo")
+        return value
+
+
+
 
 class CosiacoSerializador(ModelSerializer):
     """Este será el serializador básico para los cosiacos."""
