@@ -9,7 +9,7 @@ from usuario.models import Usuario
 class Categoria(Model):
     """Este modelo servira para crear las categorias, solo el admin deberia crear categorias."""
 
-    nombre = CharField(verbose_name=_("nombre"), max_length=50)
+    nombre = CharField(verbose_name=_("nombre"), max_length=50, unique=True)
 
     def __str__(self):
         return self.nombre

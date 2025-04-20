@@ -10,7 +10,6 @@ from api.endpoints import verificar_token_usuario, obtener_usuario_class_view, o
 # Create your views here.
 
 
-
 class IndexView(View):
     """
     Esta vista mostrará la página index.
