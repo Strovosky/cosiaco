@@ -21,7 +21,7 @@ class Cosiaco(Model):
     creador = ForeignKey(verbose_name=_("creador"), to=Usuario, null=True, on_delete=SET_NULL)
     categoria = ManyToManyField(verbose_name=_("categoria"), to=Categoria)
 
-    nombre = CharField(verbose_name=("nombre"), max_length=50)
+    nombre = CharField(verbose_name=("nombre"), max_length=50, unique=True)
     descripcion = CharField(verbose_name=_("descripción"), max_length=500, null=True, blank=True)
     fecha_creacion = DateTimeField(verbose_name=_("fecha de creación"), auto_now_add=True)
 

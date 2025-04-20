@@ -17,6 +17,7 @@ crear_usuario_generic_api_view = base_endpoint + "crear_usuario_generic_api_view
 obtener_usuario = base_endpoint + "obtener_usuario/"
 obtener_usuario_class_view = base_endpoint + "obtener_usuario_class_view/"
 obtener_usuario_generic_view = base_endpoint + "obtener_usuario_generic_view/"
+obtener_usuario_perfil = base_endpoint + "obtener_usuario_perfil/"
 
 obtener_todos_los_usuarios = base_endpoint + "obtener_todos_los_usuarios/"
 obtener_todos_los_usuarios_class_view = base_endpoint + "obtener_todos_los_usuarios_class_view/"

@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, Serializer, EmailField, CharField, ValidationError
+from rest_framework.serializers import ModelSerializer, Serializer, EmailField, CharField, ValidationError, SerializerMethodField
 from usuario.models import Usuario
 from django.contrib.auth import get_user_model
 from los_cosiacos.models import Cosiaco, Categoria, Estrella, Opinion, Like
@@ -57,6 +57,34 @@ class UsuarioLoginSerializador(Serializer):
             raise ValidationError("No existe un usuario con este correo")
         return value
 
+
+class UsuarioPerfilSerializador(ModelSerializer):
+
+    num_cosiacos = SerializerMethodField(read_only=True)
+    num_comentarios = SerializerMethodField(read_only=True)
+    cosiacos_lista = SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = get_user_model()
+        fields = [
+            "id",
+            "usuario",
+            "correo",
+            "bio",
+            "celular",
+            "cosiacos_lista",
+            "num_cosiacos",
+            "num_comentarios"
+        ]
+
+    def get_num_cosiacos(self, obj):
+        return obj.cosiaco_set.count()
+    
+    def get_num_comentarios(self, obj):
+        return obj.opinion_set.count()
+    
+    def get_cosiacos_lista(self, obj):
+        return [{"nombre":cosiaco.nombre} for cosiaco in obj.cosiaco_set.all()]
 
 
 

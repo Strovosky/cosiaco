@@ -2,7 +2,7 @@ from django.urls import path
 from .views import obtener_usuario_api_view, crear_usuario_api_view, obtener_todos_los_usuarios_api_view, actualizar_partial_usuario_api_view, desactivar_usuario_api_view, login_usuario, logout_usuario
 from .views import CrearUsuarioAPIView, ObtenerUsuarioClassView, ObtenerTodosLosUsuariosAPIView, ObtenerTodosLosUsuariosGenericView, ActualizarParcialUsuarioClassView, ActualizarParcialUsuarioGeneriView, DesactivarUsuarioClassView, LoginUsuarioClassView, LogoutClassView, CrearOpinionGenericView, DestruirOpinionGenericView, VerificadorTokenYAutenticacion
 from .views import CrearCosiaco
-from .views import CrearUsuarioGenericAPIView, ObtenerUsuarioGenericView, DesactivarUsuarioGenericView, DestruirCosiacoGeneric, CrearCategoriaGeneric, DestruirCategoriaGeneric, CrearEstrellaGeneric, ObtenerCategoriaGeneric, ObtenerCosiacoGeneric, CrearDestruirLikeGenericView, ObtenerTodasCategoriasGeneric
+from .views import CrearUsuarioGenericAPIView, ObtenerUsuarioGenericView, DesactivarUsuarioGenericView, DestruirCosiacoGeneric, CrearCategoriaGeneric, DestruirCategoriaGeneric, CrearEstrellaGeneric, ObtenerCategoriaGeneric, ObtenerCosiacoGeneric, CrearDestruirLikeGenericView, ObtenerTodasCategoriasGeneric, ObtenerUsuarioPerfilAPIView
 # RestFramework imports
 
 
@@ -11,6 +11,7 @@ urlpatterns = [
     path(route="obtener_usuario/<int:pk>/", view=obtener_usuario_api_view, name="obtener_usuario"),
     path(route="obtener_usuario_class_view/", view=ObtenerUsuarioClassView.as_view(), name="obtener_usuario_class_view"),
     path(route="obtener_usuario_generic_view/<int:pk>/", view=ObtenerUsuarioGenericView.as_view(), name="obtener_usuario_generic_view"),
+    path(route="obtener_usuario_perfil/", view=ObtenerUsuarioPerfilAPIView.as_view(), name="obtener_usuario_perfil"),
     
     path(route="crear_usuario/", view=crear_usuario_api_view, name="crear_usuario"),
     path(route="crear_usuario_class_view/", view=CrearUsuarioAPIView.as_view(), name="crear_usuario_class_view"),

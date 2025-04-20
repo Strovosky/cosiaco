@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSerializador, EstrellaSerializador, OpinionSerializador, LikeSerializador, UsuarioLoginSerializador
+from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSerializador, EstrellaSerializador, OpinionSerializador, LikeSerializador, UsuarioLoginSerializador, UsuarioPerfilSerializador
 from usuario.models import Usuario
 from los_cosiacos.models import Cosiaco, Categoria, Estrella, Opinion, Like
 from django.db.models import Q
@@ -16,7 +16,7 @@ from rest_framework.authentication import TokenAuthentication, SessionAuthentica
 from rest_framework.views import APIView
 
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView, UpdateAPIView, DestroyAPIView, GenericAPIView
-from rest_framework.mixins import DestroyModelMixin, CreateModelMixin
+from rest_framework.mixins import DestroyModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
 
 # Create your views here.
 
@@ -75,6 +75,7 @@ class ObtenerUsuarioClassView(APIView):
         if not usuario:
             return Response({"error_usuario":"No existe usuario con ese token"}, status=status.HTTP_404_NOT_FOUND)
         usuario_serializado = UsuarioSerializador(usuario)
+        print("usuario serializador", usuario_serializado.data)
         return Response(usuario_serializado.data, status=status.HTTP_200_OK)
 
 
@@ -86,6 +87,31 @@ class ObtenerUsuarioGenericView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     lookup_field = "pk"
     
+
+class ObtenerUsuarioPerfilAPIView(APIView):
+    """
+    Este API View brindará la información del usuario para mostrar en el perfil.
+    """
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            token_str = request.headers.get("Authorization").split(" ")[-1]
+        except:
+            return Response({"token error":"There's something wrong with the token"}, status=status.HTTP_400_BAD_REQUEST)
+        usuario = Token.objects.select_related("user").filter(key=token_str).first().user
+        if usuario:
+            usuario_serializado = UsuarioPerfilSerializador(usuario)
+            try:
+                usuario_serializado.data
+                return Response(usuario_serializado.data, status=status.HTTP_200_OK)
+            except:
+                return Response({"error serializacion":"No se seralizó el usuario correctamente"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"usuario error":"No hay un usuario con ese token"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser, IsAuthenticated])

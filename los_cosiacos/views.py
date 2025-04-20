@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from .decorators import usuario_autenticado_redireccion, not_logged_user
 from django.views import View
 import requests
-from api.endpoints import verificar_token_usuario, obtener_usuario_class_view, obtener_todas_categorias_generic, crear_cosiaco_generic
+from api.endpoints import verificar_token_usuario, obtener_usuario_class_view, obtener_todas_categorias_generic, crear_cosiaco_generic, obtener_usuario_perfil
 
 # Create your views here.
 
@@ -36,13 +36,13 @@ class BrowseView(View):
 class VistaPeril(View):
 
 
-    @method_decorator(not_logged_user)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+    #@method_decorator(not_logged_user)
+    #def dispatch(self, request, *args, **kwargs):
+    #    return super().dispatch(request, *args, **kwargs)
         
 
     def get(self, request, *args, **kwargs):
-        respuesta_usuario = requests.get(url=obtener_usuario_class_view, headers={"Authorization":F"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+        respuesta_usuario = requests.get(url=obtener_usuario_perfil, headers={"Authorization":F"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
         if respuesta_usuario.status_code == 200:
             token_str = request.COOKIES.get("auth_token")
             categorias = requests.get(url=obtener_todas_categorias_generic, headers={"Authorization":f"Token {token_str}"}, timeout=2)
