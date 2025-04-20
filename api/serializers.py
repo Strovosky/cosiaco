@@ -78,17 +78,15 @@ class CosiacoSerializador(ModelSerializer):
     def create(self, validated_data):
         """Vamos a modificar el create para que cree el cosiaco con el usuario."""
         request = self.context.get("request")
+        categoria = Categoria.objects.get(id=int(request.data.get("categoria")))
         try:
             descripcion = validated_data["descripcion"]
         except:
             cosiaco = request.user.cosiaco_set.create(nombre=validated_data["nombre"])
-            try:
-                categoria = Categoria.objects.get(id=int(request.data.get("categoria")))
-                cosiaco.categoria.add(categoria)
-            except:
-                pass
         else:
             cosiaco = request.user.cosiaco_set.create(nombre=validated_data["nombre"], descripcion=descripcion)
+            cosiaco.categoria.add(categoria)
+            cosiaco.save()
         return cosiaco
 
 

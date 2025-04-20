@@ -40,6 +40,7 @@ obtener_cosiaco_generic = base_endpoint + "obtener_cosiaco_generic/"
 crear_categoria_generic = base_endpoint + "crear_categoria_generic/"
 destruir_categoria_generic = base_endpoint + "destruir_categoria_generic/"
 obtener_categoria_generic = base_endpoint + "obtener_categoria_generic/"
+obtener_todas_categorias_generic = base_endpoint + "obtener_todas_categorias_generic"
 
 ##### Estrella Endpoints ######
 crear_estrella_generic = base_endpoint + "crear_estrella_generic/"

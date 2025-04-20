@@ -12,7 +12,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authentication import authenticate
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.views import APIView
 
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView, UpdateAPIView, DestroyAPIView, GenericAPIView
@@ -367,6 +367,17 @@ class ObtenerCategoriaGeneric(RetrieveAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
+
+class ObtenerTodasCategoriasGeneric(ListAPIView):
+    """
+    Esta vista me dara todas las categorias creadas hasta el momento
+    """
+
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializador
+
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class CrearEstrellaGeneric(CreateAPIView):
     """Esta vista creara la estrella que se le de a los cosiacos"""

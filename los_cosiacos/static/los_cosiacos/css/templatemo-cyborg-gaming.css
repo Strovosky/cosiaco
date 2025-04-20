@@ -1803,3 +1803,26 @@ body {
 .form-container a:hover {
   color: #f99;
 }
+
+.centered-row {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  text-align: center; /* Centers text within the elements */
+  height: 100vh; /* Full viewport height (optional, can be adjusted) */
+}
+
+.center-section {
+  display: flex; /* Enable Flexbox */
+  flex-direction: column; /* Stack items vertically */
+  justify-content: center; /* Centers vertically */
+  align-items: center; /* Centers horizontally */
+  text-align: center; /* Aligns text inside the elements */
+  height: 100vh; /* Full viewport height for centering */
+  margin: 0 auto; /* Ensures it's centrally placed */
+}
+
+
+
+
+

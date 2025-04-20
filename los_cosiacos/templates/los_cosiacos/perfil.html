@@ -72,6 +72,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                         <li><a href="{% url 'los_cosiacos_urls:browse' %}">Buscar</a></li>
                         <li><a href="details.html">Details</a></li>
                         <li><a href="streams.html">Streams</a></li>
+                        <li><a href="{% url 'usuario_urls:logout' %}">Logout</a></li>
                         <li><a href="{% url 'los_cosiacos_urls:perfil' %}" class="active">Perfil <img src="{% static 'los_cosiacos/images/profile-header.jpg' %}" alt=""></a></li>
                     </ul>   
                     <a class='menu-trigger'>
@@ -104,7 +105,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                       <h4>{{usuario.usuario.capitalize}}</h4>
                       <p>{{usuario.bio}}</p>
                       <div class="main-border-button">
-                        <a href="#">Start Live Stream</a>
+                        <a href="#">Editar Perfil</a>
                       </div>
                     </div>
                   </div>
@@ -123,7 +124,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                       <div class="row">
                         <div class="col-lg-12">
                           <div class="heading-section">
-                            <h4><em>Your Most Popular</em> Clips</h4>
+                            <h4><em>Mis</em> Cosiacos</h4>
                           </div>
                         </div>
                         <div class="col-lg-3 col-sm-6">
@@ -176,9 +177,48 @@ https://templatemo.com/tm-579-cyborg-gaming
                         </div>
                         <div class="col-lg-12">
                           <div class="main-button">
-                            <a href="#">Load More Clips</a>
+                            <a href="#">Ver Todos</a>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="clips">
+                      <div align="center" class="row centered-row">
+                        {% for message in messages %}
+                        <p>{{message}}</p>
+                        {% endfor %}
+                        <form method="post" action="">
+                          {% csrf_token %}
+                          <div class="centered-section">
+                            <div class="heading-section">
+                              <h4><em>Crear</em> Cosiacos</h4>
+                            </div>
+                          </div>
+                            <div class="form-container">
+                              <div class="col-lg-4 align-self-center">
+                                <ul>
+                                  <li>
+                                    <select name="categoria">
+                                      {% for categoria in categorias %}
+                                      <option value="{{categoria.id}}">{{categoria.nombre.capitalize}}</option>
+                                      {% endfor %}
+                                    </select>
+                                  </li>
+                                  <li><input type="text" name="nombre" placeholder="Nombre:" required ></li>
+                                  <li><input type="text" name="descripcion" placeholder="Descripción:"></li>
+                                </ul>
+                              </div>
+                            </div>
+                          <div class="col-lg-12">
+                            <div class="main-button">
+                              <button type="submit" name="crear_cosiaco" value="pressed">Crear Cosiaco</button>
+                            </div>
+                          </div>
+                      </form>
                       </div>
                     </div>
                   </div>
