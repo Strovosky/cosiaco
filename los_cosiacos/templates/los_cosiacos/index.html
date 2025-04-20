@@ -38,6 +38,7 @@ https://templatemo.com/tm-579-cyborg-gaming
 
 <body>
 
+  {% block preload %}
   <!-- ***** Preloader Start ***** -->
   <div id="js-preloader" class="js-preloader">
     <div class="preloader-inner">
@@ -50,6 +51,7 @@ https://templatemo.com/tm-579-cyborg-gaming
     </div>
   </div>
   <!-- ***** Preloader End ***** -->
+  {% endblock preload %}
 
   <!-- ***** Header Area Start ***** -->
   <header class="header-area header-sticky">
@@ -58,7 +60,7 @@ https://templatemo.com/tm-579-cyborg-gaming
             <div class="col-12">
                 <nav class="main-nav">
                     <!-- ***** Logo Start ***** -->
-                    <a href="#" class="logo">
+                    <a href="{% url 'los_cosiacos_urls:index' %}" class="logo">
                         <img src="{% static 'los_cosiacos/images/logo.png' %}" alt="">
                     </a>
                     <!-- ***** Logo End ***** -->
@@ -72,11 +74,11 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <!-- ***** Search End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                        <li><a href="index.html" class="active">Home</a></li>
+                        <li><a href="{% url 'los_cosiacos_urls:index' %}" class="active">Home</a></li>
                         <li><a href="{% url 'los_cosiacos_urls:browse' %}">Browse</a></li>
                         <li><a href="details.html">Details</a></li>
                         <li><a href="{% url 'usuario_urls:logout' %}">Logout</a></li>
-                        <li><a href="profile.html">Profile <img src="{% static 'los_cosiacos/images/profile-header.jpg' %}" alt=""></a></li>
+                        <li><a href="{% url 'los_cosiacos_urls:perfil' %}">Perfil <img src="{% static 'los_cosiacos/images/profile-header.jpg' %}" alt=""></a></li>
                     </ul>   
                     <a class='menu-trigger'>
                         <span>Menu</span>

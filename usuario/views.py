@@ -3,7 +3,9 @@ from django.urls import reverse
 from django.contrib import messages
 from django.views import View
 import requests
-from api.endpoints import login_usuario_class_view, crear_usuario_class_view, logout_class_view
+from api.endpoints import login_usuario_class_view, crear_usuario_class_view, logout_class_view, crear_usuario
+from los_cosiacos.decorators import usuario_autenticado_redireccion
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 
@@ -12,6 +14,10 @@ class VistaLogin(View):
     """
     Esta vista manejará el la página de login.
     """
+
+    @method_decorator(usuario_autenticado_redireccion)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         return render(request, "usuario/login.html", {})
@@ -49,6 +55,32 @@ class VistaLogout(View):
         response.delete_cookie("auth_token")
         return response
 
+
+class VistaRegistroUsuario(View):
+    """
+    Esta vista creará un nuevo usuario.
+    """
+
+    @method_decorator(usuario_autenticado_redireccion)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get(self, request, *args, **kwargs):
+        return render(request, "usuario/registro.html", {})
+
+    def post(self, request, *args, **kwargs):
+        usuario_respuesta = requests.post(url=crear_usuario_class_view, data=request.POST, timeout=2)
+        if usuario_respuesta.status_code == 201:
+            print(usuario_respuesta.json())
+            usuario_respuesta_auten = requests.post(url=login_usuario_class_view, data={"correo":usuario_respuesta.json()["correo"], "password":request.POST.get("password")}, timeout=2)
+            (usuario_respuesta_auten.json())
+            respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:browse"))
+            respuesta.set_cookie(key="auth_token", value=usuario_respuesta_auten.json()["token"], httponly=True)
+            return respuesta
+        print(usuario_respuesta.json())
+        for key, value in usuario_respuesta.json().items():
+            messages.add_message(request, messages.INFO, value[0].capitalize())
+        return HttpResponseRedirect(reverse("usuario_urls:registro"))
 
 
 

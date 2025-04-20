@@ -1733,3 +1733,73 @@ body {
     width: 16%;
   }
 }
+
+/* Form Container */
+.form-container {
+  background-color: #27292a;
+  padding: 40px;
+  border-radius: 15px;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Form Heading */
+.form-container h4 {
+  color: #ec6090;
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Input Fields */
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container textarea {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background-color: #1e1e1e;
+  color: #fff;
+  font-size: 14px;
+}
+
+.form-container input:focus,
+.form-container textarea:focus {
+  outline: none;
+  border-color: #ec6090;
+  box-shadow: 0 0 5px #ec6090;
+}
+
+/* Submit Button */
+.form-container .form-button {
+  display: inline-block;
+  font-size: 16px;
+  color: #fff;
+  background-color: #ec6090;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form-container .form-button:hover {
+  background-color: #fff;
+  color: #ec6090;
+}
+
+/* Optional Links (e.g., Forgot Password) */
+.form-container a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.form-container a:hover {
+  color: #f99;
+}

@@ -37,12 +37,6 @@ def crear_usuario_api_view(request):
 class CrearUsuarioAPIView(APIView):
 
     def post(self, request):
-        print("Are you even working?")
-        print(request.data.get("correo"))
-        if Usuario.objects.filter(correo=request.data.get("correo")).count() > 0:
-            return Response({"error_existencia":"El usuario ya existe con ese correo."})
-        elif Usuario.objects.filter(correo=request.data.get("usuario")).count() > 0:
-            return Response({"error_existencia":"El usuario ya existe con ese usuario."})
         usuario_serializado = UsuarioSerializador(data=request.data, many=False)
         if usuario_serializado.is_valid(raise_exception=True):
             usuario_serializado.save()
@@ -72,14 +66,16 @@ class ObtenerUsuarioClassView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
-    def get(self, request, pk):
+    def get(self, request):
         try:
-            usuario = get_object_or_404(Usuario, pk=pk)
+            token_str = request.headers.get("Authorization").split(" ")[-1]
         except:
-            return Response({"404 error":"No hay un usuario con ese pk."}, status=status.HTTP_404_NOT_FOUND)
-        else:
-            usuario_serializado = UsuarioSerializador(usuario, many=False)
-            return Response(usuario_serializado.data, status=status.HTTP_200_OK)
+            return Response({"error_token":"El token no se pasó adecuadamente"}, status=status.HTTP_400_BAD_REQUEST)
+        usuario = Token.objects.select_related("user").filter(key=token_str).first().user
+        if not usuario:
+            return Response({"error_usuario":"No existe usuario con ese token"}, status=status.HTTP_404_NOT_FOUND)
+        usuario_serializado = UsuarioSerializador(usuario)
+        return Response(usuario_serializado.data, status=status.HTTP_200_OK)
 
 
 class ObtenerUsuarioGenericView(RetrieveAPIView):

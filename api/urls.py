@@ -9,8 +9,9 @@ from .views import CrearUsuarioGenericAPIView, ObtenerUsuarioGenericView, Desact
 
 urlpatterns = [
     path(route="obtener_usuario/<int:pk>/", view=obtener_usuario_api_view, name="obtener_usuario"),
-    path(route="obtener_usuario_class_view/<int:pk>/", view=ObtenerUsuarioClassView.as_view(), name="obtener_usuario_class_view"),
+    path(route="obtener_usuario_class_view/", view=ObtenerUsuarioClassView.as_view(), name="obtener_usuario_class_view"),
     path(route="obtener_usuario_generic_view/<int:pk>/", view=ObtenerUsuarioGenericView.as_view(), name="obtener_usuario_generic_view"),
+    
     path(route="crear_usuario/", view=crear_usuario_api_view, name="crear_usuario"),
     path(route="crear_usuario_class_view/", view=CrearUsuarioAPIView.as_view(), name="crear_usuario_class_view"),
     path(route="crear_usuario_generic_api_view/", view=CrearUsuarioGenericAPIView.as_view(), name="crear_usuario_generi_api_view"),
