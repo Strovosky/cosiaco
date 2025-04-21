@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from .decorators import usuario_autenticado_redireccion, not_logged_user
 from django.views import View
 import requests
-from api.endpoints import verificar_token_usuario, obtener_usuario_class_view, obtener_todas_categorias_generic, crear_cosiaco_generic, obtener_usuario_perfil
+from api.endpoints import verificar_token_usuario, obtener_usuario_class_view, obtener_todas_categorias_generic, crear_cosiaco_generic, obtener_usuario_perfil, obtener_ultimos_cosiacos
 
 # Create your views here.
 
@@ -46,7 +46,13 @@ class VistaPeril(View):
         if respuesta_usuario.status_code == 200:
             token_str = request.COOKIES.get("auth_token")
             categorias = requests.get(url=obtener_todas_categorias_generic, headers={"Authorization":f"Token {token_str}"}, timeout=2)
-            return render(request, "los_cosiacos/perfil.html", {"usuario":respuesta_usuario.json(), "categorias":categorias.json()})
+            respuesta_cosiacos = requests.get(url=obtener_ultimos_cosiacos, headers={"Authorization":F"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+            if respuesta_cosiacos.status_code == 200:
+                print(respuesta_cosiacos.json())
+                return render(request, "los_cosiacos/perfil.html", {"usuario":respuesta_usuario.json(), "categorias":categorias.json(), "ultimos_cosiacos":respuesta_cosiacos.json()})
+            else:
+                messages.add_message(request, messages.INFO, respuesta_cosiacos.json().values())
+                return render(request, "los_cosiacos/perfil.html", {"usuario":respuesta_usuario.json(), "categorias":categorias.json(), "ultimos_cosiacos":{"cosiaco":"no información"}})
         if respuesta_usuario.status_code == 400:
             for message in respuesta_usuario.json():
                 messages.add_message(request, messages.INFO, message.value())
@@ -56,8 +62,8 @@ class VistaPeril(View):
                 messages.add_message(request, messages.INFO, message.value())
             return HttpResponseRedirect(reverse("usuario_urls:login"))
     
-        for message in respuesta_usuario.json():
-            messages.add_message(request, messages.INFO, message.value())
+        for key, value in respuesta_usuario.json().items():
+            messages.add_message(request, messages.INFO, value)
         return HttpResponseRedirect(reverse("usuario_urls:login"))
 
 

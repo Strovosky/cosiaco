@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, Serializer, EmailField, CharField, ValidationError, SerializerMethodField
+from rest_framework.serializers import ModelSerializer, Serializer, EmailField, CharField, ValidationError, SerializerMethodField, HyperlinkedIdentityField
 from usuario.models import Usuario
 from django.contrib.auth import get_user_model
 from los_cosiacos.models import Cosiaco, Categoria, Estrella, Opinion, Like
@@ -116,6 +116,41 @@ class CosiacoSerializador(ModelSerializer):
             cosiaco.categoria.add(categoria)
             cosiaco.save()
         return cosiaco
+
+
+class CosiacoSerializadorRelacionados(ModelSerializer):
+    """
+    Este serializador muestra la información del cosiaco y sus relacionados
+    """
+    obtener_cosiaco_url = HyperlinkedIdentityField(view_name="obtener_cosiaco_generic", lookup_field="pk")
+    destruir_cosiaco_url = HyperlinkedIdentityField(view_name="destruir_cosiaco_generic", lookup_field="pk")
+    categoria = SerializerMethodField(read_only=True)
+    creador = SerializerMethodField(read_only=True)
+    fecha_creacion = SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Cosiaco
+        fields = [
+            "id",
+            "creador",
+            "categoria",
+            "nombre",
+            "descripcion",
+            "fecha_creacion",
+            "mostrar_estrellas",
+            "obtener_cosiaco_url",
+            "destruir_cosiaco_url"
+        ]
+
+    def get_categoria(self, obj):
+        return [{"nombre":cate.nombre} for cate in obj.categoria.all()]
+
+    def get_creador(self, obj):
+        usuario = obj.creador
+        return {"usuario":usuario.usuario, "correo":usuario.correo, "bio":usuario.bio, "celular":usuario.celular}
+    
+    def get_fecha_creacion(self, obj):
+        return f"{obj.fecha_creacion.month}/{obj.fecha_creacion.day}/{obj.fecha_creacion.year}"
 
 
 class CategoriaSerializador(ModelSerializer):

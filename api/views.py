@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSerializador, EstrellaSerializador, OpinionSerializador, LikeSerializador, UsuarioLoginSerializador, UsuarioPerfilSerializador
+from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSerializador, EstrellaSerializador, OpinionSerializador, LikeSerializador, UsuarioLoginSerializador, UsuarioPerfilSerializador, CosiacoSerializadorRelacionados
 from usuario.models import Usuario
 from los_cosiacos.models import Cosiaco, Categoria, Estrella, Opinion, Like
 from django.db.models import Q
@@ -362,6 +362,17 @@ class ObtenerCosiacoGeneric(RetrieveAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+
+class ObtenerUltimosCosiacos(ListAPIView):
+    """
+    Este API View entregará los ultimos 10 cosiacos
+    """
+
+    queryset = Cosiaco.objects.order_by("fecha_creacion").reverse()[:4]
+    serializer_class = CosiacoSerializadorRelacionados
+
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 class CrearCategoriaGeneric(CreateAPIView):
