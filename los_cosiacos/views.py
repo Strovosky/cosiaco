@@ -28,6 +28,11 @@ class BrowseView(View):
     Esta vista manejará la pagina de busqueda una vez uno se ha logeado.
     """
 
+    @method_decorator(not_logged_user)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+
     def get(self, request, *args, **kwargs):
         return render(request, "los_cosiacos/browse.html")
 
@@ -36,9 +41,9 @@ class BrowseView(View):
 class VistaPeril(View):
 
 
-    #@method_decorator(not_logged_user)
-    #def dispatch(self, request, *args, **kwargs):
-    #    return super().dispatch(request, *args, **kwargs)
+    @method_decorator(not_logged_user)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
         
 
     def get(self, request, *args, **kwargs):
@@ -48,7 +53,6 @@ class VistaPeril(View):
             categorias = requests.get(url=obtener_todas_categorias_generic, headers={"Authorization":f"Token {token_str}"}, timeout=2)
             respuesta_cosiacos = requests.get(url=obtener_ultimos_cosiacos, headers={"Authorization":F"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
             if respuesta_cosiacos.status_code == 200:
-                print(respuesta_cosiacos.json())
                 return render(request, "los_cosiacos/perfil.html", {"usuario":respuesta_usuario.json(), "categorias":categorias.json(), "ultimos_cosiacos":respuesta_cosiacos.json()})
             else:
                 messages.add_message(request, messages.INFO, respuesta_cosiacos.json().values())

@@ -10,7 +10,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <title>Cosiaco - Perfil</title>
+    <title>{% block title %}Cosiaco - Perfil{% endblock title %}</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'los_cosiacos/' %}vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -33,7 +33,7 @@ https://templatemo.com/tm-579-cyborg-gaming
 
 <body>
 
-
+  {% block preload %}
   <!-- ***** Preloader Start ***** -->
   <!--div id="js-preloader" class="js-preloader">
     <div class="preloader-inner">
@@ -46,6 +46,7 @@ https://templatemo.com/tm-579-cyborg-gaming
     </div>
   </div-->
   <!-- ***** Preloader End ***** -->
+   {% endblock preload %}
 
   <!-- ***** Header Area Start ***** -->
   <header class="header-area header-sticky">
@@ -121,6 +122,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="clips">
+                      {% block mis_cosiacos %}
                       <div class="row">
                         <div class="col-lg-12">
                           <div class="heading-section">
@@ -147,6 +149,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                           </div>
                         </div>
                       </div>
+                      {% endblock mis_cosiacos %}
                     </div>
                   </div>
                 </div>
@@ -164,7 +167,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                               <h4><em>Crear</em> Cosiacos</h4>
                             </div>
                           </div>
-                            <div class="form-container">
+                            <div align="center" class="form-container">
                               <div class="col-lg-4 align-self-center">
                                 <ul>
                                   <li>
