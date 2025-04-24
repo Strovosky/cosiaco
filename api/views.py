@@ -3,6 +3,7 @@ from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSeri
 from usuario.models import Usuario
 from los_cosiacos.models import Cosiaco, Categoria, Estrella, Opinion, Like
 from django.db.models import Q
+from .pagination import CosiacoPerfilPagination
 
 # Rest Framework imports
 from rest_framework import status
@@ -16,7 +17,7 @@ from rest_framework.authentication import TokenAuthentication, SessionAuthentica
 from rest_framework.views import APIView
 
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView, UpdateAPIView, DestroyAPIView, GenericAPIView
-from rest_framework.mixins import DestroyModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.mixins import DestroyModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, ListModelMixin
 
 # Create your views here.
 
@@ -350,6 +351,41 @@ class DestruirCosiacoGeneric(DestroyAPIView):
 
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
+
+class ObtenerCosiacosUsurioGeneric(ListModelMixin, RetrieveModelMixin, GenericAPIView):
+    """
+    Esta vista dará los cociacos paginados pertenecientes al usuario autenticado.
+    """
+
+    queryset = Cosiaco.objects.all()
+    serializer_class = CosiacoSerializador
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    pagination_class = CosiacoPerfilPagination
+    lookup_field = "pk"
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Modifiqué retrieve para que obtenga multiples cosiacos con el pk del usuario autenticado.
+        """
+        usuario = get_object_or_404(Usuario, pk=kwargs.get("pk"))
+        if not usuario:
+            return Response({"error usuario":"el usuario no existe"}, status=status.HTTP_404_NOT_FOUND)
+        cosiacos = Cosiaco.objects.filter(creador=usuario).order_by("id")
+
+        paginador = CosiacoPerfilPagination()
+        cosiacos_paginados = paginador.paginate_queryset(cosiacos, request)
+        cosiacos_serializados = self.get_serializer(cosiacos_paginados, many=True)
+        return paginador.get_paginated_response(cosiacos_serializados.data)
+
+    def get(self, request, *args, **kwargs):
+        if kwargs.get("pk") is not None:
+            return self.retrieve(request, *args, **kwargs)
+        return Response({"error cosiacons con usuario":"No se pudieron obtener los cosiacos de este usuario unicamente"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 
 

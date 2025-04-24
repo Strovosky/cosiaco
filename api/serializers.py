@@ -84,7 +84,7 @@ class UsuarioPerfilSerializador(ModelSerializer):
         return obj.opinion_set.count()
     
     def get_cosiacos_lista(self, obj):
-        return [{"nombre":cosiaco.nombre} for cosiaco in obj.cosiaco_set.all()][:4]
+        return [{"nombre":cosiaco.nombre} for cosiaco in obj.cosiaco_set.all()]
 
 
 
