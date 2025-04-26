@@ -26,6 +26,12 @@
 .flex-slider a:hover {
   outline: none;
 }
+.flex-container button:hover,
+.flex-slider button:hover {
+  outline: none;
+}
+
+
 .slides,
 .slides > li,
 .flex-control-nav,
@@ -147,6 +153,20 @@ html[xmlns] .flexslider .slides {
 .flex-direction-nav a.flex-next:before {
   content: '\f002';
 }
+
+.flex-direction-nav button:before {
+  font-family: "flexslider-icon";
+  font-size: 26px;
+  display: inline-block;
+  content: '\f001';
+  color: rgba(0, 0, 0, 0.8);
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.3);
+}
+.flex-direction-nav button.flex-next:before {
+  content: '\f002';
+}
+
+
 .flex-direction-nav .flex-prev {
   left: -50px;
 }
@@ -199,6 +219,37 @@ html[xmlns] .flexslider .slides {
 .flex-pauseplay a.flex-play:before {
   content: '\f003';
 }
+
+
+
+
+.flex-pauseplay button {
+  display: block;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  bottom: 5px;
+  left: 10px;
+  opacity: 0.8;
+  z-index: 10;
+  overflow: hidden;
+  cursor: pointer;
+  color: #000;
+}
+.flex-pauseplay button:before {
+  font-family: "flexslider-icon";
+  font-size: 20px;
+  display: inline-block;
+  content: '\f004';
+}
+.flex-pauseplay button:hover {
+  opacity: 1;
+}
+.flex-pauseplay button.flex-play:before {
+  content: '\f003';
+}
+
+
 .flex-control-nav {
   width: 100%;
   position: absolute;

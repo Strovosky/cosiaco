@@ -1,14 +1,27 @@
+# Standard library imports
+import requests
+
+# Django Imports
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from django.utils.decorators import method_decorator
-from .decorators import usuario_autenticado_redireccion, not_logged_user
 from django.views import View
-import requests
-from api.endpoints import verificar_token_usuario, obtener_usuario_class_view, obtener_todas_categorias_generic, crear_cosiaco_generic, obtener_usuario_perfil, obtener_ultimos_cosiacos, obtener_cosiacos_usuario_generic
 
-# Create your views here.
+# Local Imports
+from .decorators import usuario_autenticado_redireccion, not_logged_user
+from api.endpoints import (
+    verificar_token_usuario,
+    obtener_usuario_class_view,
+    obtener_todas_categorias_generic,
+    crear_cosiaco_generic,
+    obtener_usuario_perfil,
+    obtener_ultimos_cosiacos,
+    obtener_cosiacos_usuario_generic,
+    actualizacion_parcial_usuario_class_view)
 
+
+# The Views.
 
 class IndexView(View):
     """
@@ -112,7 +125,6 @@ class VistaPeril(View):
             categorias = requests.get(url=obtener_todas_categorias_generic, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
             respuesta_ultimos_cosiacos = requests.get(url=obtener_ultimos_cosiacos, headers={"Authorization":F"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
             return render(request, "los_cosiacos/perfil.html", {"usuario":respuesta_usuario.json(), "categorias":categorias.json(), "ultimos_cosiacos":respuesta_ultimos_cosiacos.json(), "cosiacos":respuesta_cosiaco_usuario.json()})
-        
         for key, value in respuesta_usuario.json().items():
             messages.add_message(request, messages.INFO, value)
         response = HttpResponseRedirect(reverse("los_cosiacos_urls:perfil"))
@@ -120,4 +132,36 @@ class VistaPeril(View):
         return response
 
 
+class ActualizarPerfil(View):
+    """
+    Esta sera la vista que actualizara el perfil del usuario.
+    """
 
+    def get(self, request, *args, **kwargs):
+        ### ME ESTA DICIENDO QUE EL TOKEN ESTA INVALIDO ####
+        respuesta_usuario = requests.get(url=obtener_usuario_perfil, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+        if respuesta_usuario.status_code is not 200:
+            for value in respuesta_usuario.json().values():
+                messages.add_message(request, messages.INFO, value)
+        #respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:actualizar_perfil", args=((kwargs.get("pk"),))))
+        respuesta_ultimos_cosiacos = requests.get(url=obtener_ultimos_cosiacos, headers={"Authorization":F"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+        respuesta = render(request, "los_cosiacos/actualizar_perfil.html", {"usuario":respuesta_usuario.json(), "ultimos_cosiacos":respuesta_ultimos_cosiacos.json()})
+        respuesta.set_cookie("auth_token", value=request.COOKIES.get("auth_token"))
+        return respuesta
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get("btn_editar_perfil") == "pressed":
+            data = request.POST
+            respuesta_usuario = requests.patch(url=actualizacion_parcial_usuario_class_view + str(kwargs.get("pk")) + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, data=data, timeout=2)
+            if respuesta_usuario.status_code is not 200:
+                for value in respuesta_usuario.json().values():
+                    messages.add_message(request, messages.INFO, value)
+                respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:actualizar_perfil", args=((kwargs.get("pk"),))))
+            else:
+                respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:perfil"))
+            respuesta.set_cookie("auth_token", value=request.COOKIES.get("auth_token"))
+            return respuesta
+        messages.add_message(request, messages.INFO, respuesta_usuario.json().values())
+        respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:actualizar_perfil", args=(kwargs.get("pk"),)))
+        respuesta.set_cookie("auth_token", value=request.COOKIES.get("auth_token"))
+        return respuesta

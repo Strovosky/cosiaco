@@ -32,7 +32,7 @@ reset
 --------------------------------------------- 
 */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, div
-pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q,
+pre, a, button, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q,
 s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li,
 figure, header, nav, section, article, option, aside, footer, figcaption {
   margin: 0;
@@ -93,6 +93,17 @@ a {
 a:hover {
 	color: #F99;
 }
+
+
+button {
+	color: #CCC;
+  text-decoration: none !important;
+}
+button:hover {
+	color: #F99;
+}
+
+
 
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0px;
@@ -180,6 +191,29 @@ p {
   color: #e75e8d;
 }
 
+
+.main-button button {
+  font-size: 14px;
+  color: #fff;
+  background-color: #e75e8d;
+  padding: 12px 30px;
+  display: inline-block;
+  border-radius: 25px;
+  font-weight: 400;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+  transition: all .3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.main-button button:hover {
+  background-color: #fff;
+  color: #e75e8d;
+}
+
+
+
 .main-border-button a {
   font-size: 14px;
   color: #ec6090;
@@ -212,6 +246,42 @@ p {
   color: #666;
   background-color: transparent;
 }
+
+
+.main-border-button button {
+  font-size: 14px;
+  color: #ec6090;
+  background-color: transparent;
+  border: 1px solid #ec6090;
+  padding: 12px 30px;
+  display: inline-block;
+  border-radius: 25px;
+  font-weight: 400;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+  transition: all .3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.main-border-button button:hover {
+  border-color: #fff;
+  background-color: #fff;
+  color: #e75e8d;
+}
+
+.border-no-active button {
+  border-color: #666;
+  color: #666;
+}
+
+.border-no-active button:hover{
+  border-color: #666;
+  color: #666;
+  background-color: transparent;
+}
+
+
 
 section {
   margin-top: 120px;

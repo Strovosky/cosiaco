@@ -1,9 +1,22 @@
+
+# Django Imports
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
-from .serializers import UsuarioSerializador, CosiacoSerializador, CategoriaSerializador, EstrellaSerializador, OpinionSerializador, LikeSerializador, UsuarioLoginSerializador, UsuarioPerfilSerializador, CosiacoSerializadorRelacionados
+
+# Local Imports
 from usuario.models import Usuario
 from los_cosiacos.models import Cosiaco, Categoria, Estrella, Opinion, Like
-from django.db.models import Q
 from .pagination import CosiacoPerfilPagination
+from .serializers import (
+    UsuarioSerializador,
+    CosiacoSerializador,
+    CategoriaSerializador,
+    EstrellaSerializador,
+    OpinionSerializador,
+    LikeSerializador,
+    UsuarioLoginSerializador,
+    UsuarioPerfilSerializador,
+    CosiacoSerializadorRelacionados)
 
 # Rest Framework imports
 from rest_framework import status
@@ -15,13 +28,22 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.views import APIView
+from rest_framework.generics import (
+    CreateAPIView,
+    RetrieveAPIView,
+    ListAPIView,
+    UpdateAPIView,
+    DestroyAPIView,
+    GenericAPIView)
+from rest_framework.mixins import (
+    DestroyModelMixin,
+    CreateModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    ListModelMixin)
 
-from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView, UpdateAPIView, DestroyAPIView, GenericAPIView
-from rest_framework.mixins import DestroyModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, ListModelMixin
 
-# Create your views here.
-
-
+# The API Views
 
 @api_view(["POST"])
 def crear_usuario_api_view(request):
@@ -168,10 +190,20 @@ class ActualizarParcialUsuarioClassView(APIView):
 
     def patch(self, request, pk):
         usuario = get_object_or_404(Usuario, pk=pk)
+        if usuario is None:
+            return Response({"error_usuario":f"el usuario con id:{pk} no existe."}, status=status.HTTP_404_NOT_FOUND)
         usuario_actual = Token.objects.get(key=request.headers.get("Authorization").split(" ")[-1]).user
         if usuario != usuario_actual:
             return Response({"error_usuario":"El usuario autenticado y el usuario que busca no son el mismo."}, status=status.HTTP_400_BAD_REQUEST)
-        usuario_serializado = UsuarioSerializador(usuario, data=request.data, partial=True)
+        
+        data = request.data.copy()
+        if not data["bio"] and not data["celular"]:
+            return Response({"error información":"No se proveyó ni bio ni celular"}, status=status.HTTP_400_BAD_REQUEST)
+        if  not data["bio"]:
+            data.pop("bio")
+        elif not data["celular"]:
+            data.pop("celular")
+        usuario_serializado = UsuarioSerializador(usuario, data=data, partial=True)
         if usuario_serializado.is_valid(raise_exception=True):
             if "usuario" in request.data.keys() or "correo" in request.data.keys():
                 return Response({"error_de_actualización":"El nombre de usuario o correo electrónico no pueden ser actualizados."}, status=status.HTTP_400_BAD_REQUEST)
@@ -383,9 +415,6 @@ class ObtenerCosiacosUsurioGeneric(ListModelMixin, RetrieveModelMixin, GenericAP
         if kwargs.get("pk") is not None:
             return self.retrieve(request, *args, **kwargs)
         return Response({"error cosiacons con usuario":"No se pudieron obtener los cosiacos de este usuario unicamente"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-
 
 
 
