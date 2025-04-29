@@ -50,6 +50,7 @@ crear_estrella_generic = base_endpoint + "crear_estrella_generic/"
 
 ##### Opinion Endpoints #######
 crear_opinion_generic = base_endpoint + "crear_opinion_generic/"
+obtener_opinion_cosiaco_generic = base_endpoint + "obtener_opinion_cosiaco_generic/"
 destruir_opinion_generic = base_endpoint + "destruir_opinion_generic/"
 
 ##### Like Endpoints ######

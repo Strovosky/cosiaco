@@ -1,0 +1,315 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <title>Cosiaco - {{cosiaco.nombre}}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'los_cosiacos/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="{% static 'los_cosiacos/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'los_cosiacos/css/templatemo-cyborg-gaming.css' %}">
+    <link rel="stylesheet" href="{% static 'los_cosiacos/css/owl.css' %}">
+    <link rel="stylesheet" href="{% static 'los_cosiacos/css/animate.css' %}">
+    <link rel="stylesheet"href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+<!--
+
+TemplateMo 579 Cyborg Gaming
+
+https://templatemo.com/tm-579-cyborg-gaming
+
+-->
+  </head>
+
+<body>
+
+  <!-- ***** Preloader Start ***** -->
+  <div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+      <span class="dot"></span>
+      <div class="dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+  <!-- ***** Preloader End ***** -->
+
+  <!-- ***** Header Area Start ***** -->
+  <header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a href="{% url 'los_cosiacos_urls:index' %}" class="logo">
+                        <img src="{% static 'los_cosiacos/images/logo.png' %}" alt="">
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Search End ***** -->
+                    <div class="search-input">
+                      <form id="search" action="#">
+                        <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                        <i class="fa fa-search"></i>
+                      </form>
+                    </div>
+                    <!-- ***** Search End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li><a href="{% url 'los_cosiacos_urls:index' %}">Inicio</a></li>
+                        <li><a href="{% url 'los_cosiacos_urls:browse' %}" class="active">Buscar</a></li>
+                        <li><a href="{% url 'usuario_urls:logout' %}">Salir</a></li>
+                        <li><a href="{% url 'los_cosiacos_urls:perfil' %}">Perfil<img src="{% static 'los_cosiacos/images/profile-header.jpg' %}" alt=""></a></li>
+                    </ul>   
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+  </header>
+  <!-- ***** Header Area End ***** -->
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="page-content">
+
+          <!-- ***** Featured Start ***** -->
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="feature-banner header-text">
+                <div class="row">
+                  <div class="col-lg-4">
+                    <img src="{% static 'los_cosiacos/images/feature-left.jpg' %}" alt="" style="border-radius: 23px;">
+                  </div>
+                  <div class="col-lg-8">
+                    <div class="thumb">
+                      <img src="{% static 'los_cosiacos/images/feature-right.jpg' %}" alt="" style="border-radius: 23px;">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ***** Featured End ***** -->
+
+          <!-- ***** Details Start ***** -->
+          <div class="game-details">
+            <div class="row">
+              <div class="col-lg-12">
+                <h2>{{cosiaco.nombre}}</h2>
+              </div>
+              <div class="col-lg-12">
+                <div class="content">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="left-info">
+                        <div class="left">
+                          <h4>Estrellas</h4>
+                          <span>Comentarios</span>
+                        </div>
+                        <ul>
+                          {% if not cosiaco.mostrar_estrellas %}
+                          <li><i class="fa fa-star"></i> 0.0</li>
+                          {% else %}
+                          <li><i class="fa fa-star"></i> {{cosiaco.mostrar_estrellas}}</li>
+                          {% endif %}
+                          <li><i class="fa fa-download"></i> 2.3M</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div align="center" class="right-info">
+                        <form method="post" action="">
+                          {% csrf_token %}
+                          <div class="main-button" >
+                            <button type="post" name="btn_estrellas" value="pressed">Dar Estrellas</button>
+                          </div>
+                          <h6>---</h6>
+                          <input list="estrellas" required>
+                          <datalist id="estrellas">
+                            <option value="1"></option>
+                            <option value="2"></option>
+                            <option value="3"></option>
+                            <option value="4"></option>
+                            <option value="5"></option>
+                          </datalist>
+                        </form>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <img src="{% static 'los_cosiacos/images/details-01.jpg' %}" alt="" style="border-radius: 23px; margin-bottom: 30px;">
+                    </div>
+                    <div class="col-lg-4">
+                      <img src="{% static 'los_cosiacos/images/details-02.jpg' %}" alt="" style="border-radius: 23px; margin-bottom: 30px;">
+                    </div>
+                    <div class="col-lg-4">
+                      <img src="{% static 'los_cosiacos/images/details-03.jpg' %}" alt="" style="border-radius: 23px; margin-bottom: 30px;">
+                    </div>
+                    <div class="col-lg-12">
+                      <p>{{cosiaco.descripcion}}</p>
+                    </div>
+                    <div class="row" align="center">
+                      <div class="col-lg-12">
+                        <div class="centered-section">
+                          <div class="heading-section">
+                            <h4><em></em> Comentarios</h4>
+                          </div>
+                          {% if not comentarios %}
+                            <p>No hay comentarios hasta el momento.</p>
+                          {% else %}
+                            {% for comentario in comentarios.results %}
+                            <p>{{comentario.descripcion}}</p>
+                            <p>{{comentario.creador.capitalize}}</p>
+                            <p>{{comentario.fecha_creacion}}</p>
+                            {% endfor %}
+                          <p></p>
+                          <form method="post" action="">
+                            {% csrf_token %}
+                            {% if comentarios.next != None %}
+                              <button type="submit" name="ver_mas_comentarios" value="{{comentarios.next}}">Ver Más Comentarios</button>
+                            {% endif %}
+                            {% if comentarios.previous != None %}
+                              <button type="submit" name="ver_comentarios_anteriores" value="{{comentarios.previous}}">Ver Comentarios Anteriores</button>
+                            {% endif %}
+                            {% if not comentarios.next and not comentarios.previous %}
+                              <p></p>
+                            {% endif %}
+                          </form>
+                          {% endif %}
+                          <p></p>
+                          <textarea name="comentario" id="commentario"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="main-border-button">
+                        <a href="#">Dejar Comentario</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ***** Details End ***** -->
+
+          <!-- ***** Other Start ***** -->
+          <div class="other-games">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="heading-section">
+                  <h4><em>Other Related</em> Games</h4>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="item">
+                  <img src="{% static 'los_cosiacos/images/game-01.jpg' %}" alt="" class="templatemo-item">
+                  <h4>Dota 2</h4><span>Sandbox</span>
+                  <ul>
+                    <li><i class="fa fa-star"></i> 4.8</li>
+                    <li><i class="fa fa-download"></i> 2.3M</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="item">
+                  <img src="{% static 'los_cosiacos/images/game-02.jpg' %}" alt="" class="templatemo-item">
+                  <h4>Dota 2</h4><span>Sandbox</span>
+                  <ul>
+                    <li><i class="fa fa-star"></i> 4.8</li>
+                    <li><i class="fa fa-download"></i> 2.3M</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="item">
+                  <img src="{% static 'los_cosiacos/images/game-03.jpg' %}" alt="" class="templatemo-item">
+                  <h4>Dota 2</h4><span>Sandbox</span>
+                  <ul>
+                    <li><i class="fa fa-star"></i> 4.8</li>
+                    <li><i class="fa fa-download"></i> 2.3M</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="item">
+                  <img src="{% static 'los_cosiacos/images/game-02.jpg' %}" alt="" class="templatemo-item">
+                  <h4>Dota 2</h4><span>Sandbox</span>
+                  <ul>
+                    <li><i class="fa fa-star"></i> 4.8</li>
+                    <li><i class="fa fa-download"></i> 2.3M</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="item">
+                  <img src="{% static 'los_cosiacos/images/game-03.jpg' %}" alt="" class="templatemo-item">
+                  <h4>Dota 2</h4><span>Sandbox</span>
+                  <ul>
+                    <li><i class="fa fa-star"></i> 4.8</li>
+                    <li><i class="fa fa-download"></i> 2.3M</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="item">
+                  <img src="{% static 'los_cosiacos/images/game-01.jpg' %}" alt="" class="templatemo-item">
+                  <h4>Dota 2</h4><span>Sandbox</span>
+                  <ul>
+                    <li><i class="fa fa-star"></i> 4.8</li>
+                    <li><i class="fa fa-download"></i> 2.3M</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ***** Other End ***** -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <p>Copyright © 2036 <a href="#">Cyborg Gaming</a> Company. All rights reserved. 
+          
+          <br>Design: <a href="https://templatemo.com" target="_blank" title="free CSS templates">TemplateMo</a></p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Scripts -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static 'los_cosiacos/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'los_cosiacos/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+
+  <script src="{% static 'los_cosiacos/js/isotope.min.js' %}"></script>
+  <script src="{% static 'los_cosiacos/js/owl-carousel.js' %}"></script>
+  <script src="{% static 'los_cosiacos/js/tabs.js' %}"></script>
+  <script src="{% static 'los_cosiacos/js/popup.js' %}"></script>
+  <script src="{% static 'los_cosiacos/js/custom.js' %}"></script>
+
+
+  </body>
+
+</html>

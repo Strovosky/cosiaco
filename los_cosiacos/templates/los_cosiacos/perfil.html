@@ -71,8 +71,6 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <ul class="nav">
                         <li><a href="{% url 'los_cosiacos_urls:index' %}">Inicio</a></li>
                         <li><a href="{% url 'los_cosiacos_urls:browse' %}">Buscar</a></li>
-                        <li><a href="details.html">Details</a></li>
-                        <li><a href="streams.html">Streams</a></li>
                         <li><a href="{% url 'usuario_urls:logout' %}">Logout</a></li>
                         <li><a href="{% url 'los_cosiacos_urls:perfil' %}" class="active">Perfil <img src="{% static 'los_cosiacos/images/profile-header.jpg' %}" alt=""></a></li>
                     </ul>   
@@ -136,10 +134,10 @@ https://templatemo.com/tm-579-cyborg-gaming
                           <div class="item">
                             <div class="thumb">
                               <img src="{% static 'los_cosiacos/images/clip-02.jpg' %}" alt="{{cosiaco.nombre}}" style="border-radius: 23px;">
-                              <a href="https://www.youtube.com/watch?v=r1b03uKWk_M" target="_blank"><i class="fa fa-play"></i></a>
+                              <a href="{% url 'los_cosiacos_urls:detalle_cosiaco' cosiaco.id %}" target="_blank"><i class="fa fa-play"></i></a>
                             </div>
                             <div class="down-content">
-                              <h4>{{cosiaco.nombre}}</h4>
+                              <h4><a href="{% url 'los_cosiacos_urls:detalle_cosiaco' cosiaco.id %}">{{cosiaco.nombre}}</a></h4>
                               <span><i class="fa fa-eye"></i> 183</span>
                             </div>
                           </div>

@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404
 # Local Imports
 from usuario.models import Usuario
 from los_cosiacos.models import Cosiaco, Categoria, Estrella, Opinion, Like
-from .pagination import CosiacoPerfilPagination
+from .pagination import CosiacoPerfilPagination, OpinionCosiacoPagination
 from .serializers import (
     UsuarioSerializador,
     CosiacoSerializador,
@@ -417,7 +417,6 @@ class ObtenerCosiacosUsurioGeneric(ListModelMixin, RetrieveModelMixin, GenericAP
         return Response({"error cosiacons con usuario":"No se pudieron obtener los cosiacos de este usuario unicamente"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class ObtenerCosiacoGeneric(RetrieveAPIView):
 
     queryset = Cosiaco.objects.all()
@@ -499,6 +498,49 @@ class CrearOpinionGenericView(CreateAPIView):
 
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
+
+class ObtenerOpinionCosiaco(RetrieveModelMixin, GenericAPIView):
+    """
+    Esta vista dara la lista de opiniones paginadas de un cosiaco en particular
+    """
+
+    queryset = Opinion.objects.all()
+    serializer_class = OpinionSerializador
+    lookup_field = "pk"
+
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    pagination_class = OpinionCosiacoPagination
+
+    def retrieve(self, request, *args, **kwargs):
+        if not kwargs.get("pk"):
+            return Response({"no pk":"no se paso el pk en args en retrive"}, status=status.HTTP_400_BAD_REQUEST)
+        opiniones = Opinion.objects.select_related("cosiaco").filter(cosiaco_id=kwargs.get("pk")).order_by("fecha_creacion")
+        if opiniones.count() < 1:
+            return Response({"no opinion":"El cosiaco aun no tiene opiniones"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # -- Esto de aca --
+        #paginador = OpinionCosiacoPagination()
+        #opiniones_paginadas = paginador.paginate_queryset(opiniones, request)
+        
+        # -- Se puede hacer asi mas facil ---
+        opiniones_paginadas = self.paginate_queryset(opiniones)
+        
+        opiniones_serializadas = self.get_serializer(opiniones_paginadas, many=True)
+        return self.get_paginated_response(opiniones_serializadas.data)
+
+    def get(self, request, *args, **kwargs):
+        """Se va a pasar el pk del cosiaco para encontrar sus comentarios"""
+        if kwargs.get("pk"):
+            return  self.retrieve(request, *args, **kwargs)
+        return Response({"error inesperado":"Ocurrio un error inesperado debido a que no se pasó el pk"}, status=status.HTTP_400_BAD_REQUEST)
+                
+
+
+                
+
 
 
 class DestruirOpinionGenericView(DestroyAPIView):

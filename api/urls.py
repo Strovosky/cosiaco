@@ -2,7 +2,7 @@ from django.urls import path
 from .views import obtener_usuario_api_view, crear_usuario_api_view, obtener_todos_los_usuarios_api_view, actualizar_partial_usuario_api_view, desactivar_usuario_api_view, login_usuario, logout_usuario
 from .views import CrearUsuarioAPIView, ObtenerUsuarioClassView, ObtenerTodosLosUsuariosAPIView, ObtenerTodosLosUsuariosGenericView, ActualizarParcialUsuarioClassView, ActualizarParcialUsuarioGeneriView, DesactivarUsuarioClassView, LoginUsuarioClassView, LogoutClassView, CrearOpinionGenericView, DestruirOpinionGenericView, VerificadorTokenYAutenticacion
 from .views import CrearCosiaco
-from .views import CrearUsuarioGenericAPIView, ObtenerUsuarioGenericView, DesactivarUsuarioGenericView, DestruirCosiacoGeneric, CrearCategoriaGeneric, DestruirCategoriaGeneric, CrearEstrellaGeneric, ObtenerCategoriaGeneric, ObtenerCosiacoGeneric, CrearDestruirLikeGenericView, ObtenerTodasCategoriasGeneric, ObtenerUsuarioPerfilAPIView, ObtenerUltimosCosiacos, ObtenerCosiacosUsurioGeneric
+from .views import CrearUsuarioGenericAPIView, ObtenerUsuarioGenericView, DesactivarUsuarioGenericView, DestruirCosiacoGeneric, CrearCategoriaGeneric, DestruirCategoriaGeneric, CrearEstrellaGeneric, ObtenerCategoriaGeneric, ObtenerCosiacoGeneric, CrearDestruirLikeGenericView, ObtenerTodasCategoriasGeneric, ObtenerUsuarioPerfilAPIView, ObtenerUltimosCosiacos, ObtenerCosiacosUsurioGeneric, ObtenerOpinionCosiaco
 # RestFramework imports
 
 
@@ -46,6 +46,7 @@ urlpatterns = [
     path(route="crear_estrella_generic/", view=CrearEstrellaGeneric.as_view(), name="crear_estrella_generic"),
 
     path(route="crear_opinion_generic/", view=CrearOpinionGenericView.as_view(), name="crear_opinion_generic"),
+    path(route="obtener_opinion_cosiaco_generic/<int:pk>/", view=ObtenerOpinionCosiaco.as_view(), name="obtener_opinion_cosiaco_generic"),
     path(route="destruir_opinion_generic/<int:pk>/", view=DestruirOpinionGenericView.as_view(), name="destruir_opinion_generic"),
 
     path(route="crear_like_generic/", view=CrearDestruirLikeGenericView.as_view(), name="crear_like_generic"),

@@ -18,7 +18,9 @@ from api.endpoints import (
     obtener_usuario_perfil,
     obtener_ultimos_cosiacos,
     obtener_cosiacos_usuario_generic,
-    actualizacion_parcial_usuario_class_view)
+    actualizacion_parcial_usuario_class_view,
+    obtener_cosiaco_generic,
+    obtener_opinion_cosiaco_generic)
 
 
 # The Views.
@@ -35,7 +37,6 @@ class IndexView(View):
     def get(self, request, *args, **kwargs):
         return render(request, "los_cosiacos/index.html", {})
 
-
 class BrowseView(View):
     """
     Esta vista manejará la pagina de busqueda una vez uno se ha logeado.
@@ -49,9 +50,10 @@ class BrowseView(View):
     def get(self, request, *args, **kwargs):
         return render(request, "los_cosiacos/browse.html")
 
-
-
 class VistaPeril(View):
+    """
+    Esta vista manejara el template perfil.html y la logica de este.
+    """
 
     @method_decorator(not_logged_user)
     def dispatch(self, request, *args, **kwargs):
@@ -131,16 +133,17 @@ class VistaPeril(View):
         response.set_cookie(key="auth_token", value=request.COOKIES.get("auth_token"), httponly=True)
         return response
 
-
 class ActualizarPerfil(View):
     """
     Esta sera la vista que actualizara el perfil del usuario.
     """
+    @method_decorator(not_logged_user)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        ### ME ESTA DICIENDO QUE EL TOKEN ESTA INVALIDO ####
         respuesta_usuario = requests.get(url=obtener_usuario_perfil, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
-        if respuesta_usuario.status_code is not 200:
+        if respuesta_usuario.status_code != 200:
             for value in respuesta_usuario.json().values():
                 messages.add_message(request, messages.INFO, value)
         #respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:actualizar_perfil", args=((kwargs.get("pk"),))))
@@ -153,7 +156,7 @@ class ActualizarPerfil(View):
         if request.POST.get("btn_editar_perfil") == "pressed":
             data = request.POST
             respuesta_usuario = requests.patch(url=actualizacion_parcial_usuario_class_view + str(kwargs.get("pk")) + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, data=data, timeout=2)
-            if respuesta_usuario.status_code is not 200:
+            if respuesta_usuario.status_code != 200:
                 for value in respuesta_usuario.json().values():
                     messages.add_message(request, messages.INFO, value)
                 respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:actualizar_perfil", args=((kwargs.get("pk"),))))
@@ -165,3 +168,59 @@ class ActualizarPerfil(View):
         respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:actualizar_perfil", args=(kwargs.get("pk"),)))
         respuesta.set_cookie("auth_token", value=request.COOKIES.get("auth_token"))
         return respuesta
+
+class DetalleCosiaco(View):
+    """
+    Esta vista manejara el template detalle_cosiaco.html y mostrara la infromación de un cosiaco en especifico.
+    """
+
+    @method_decorator(not_logged_user)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get(self, request, *args, **kwargs):
+        cosiaco_respuesta = requests.get(url=obtener_cosiaco_generic + str(kwargs.get("pk")) + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+        if cosiaco_respuesta.status_code != 200:
+            for value in cosiaco_respuesta.json().values():
+                messages.add_message(request, messages.INFO, value)
+                respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {})
+        else:
+            comentarios_respuesta = requests.get(url=obtener_opinion_cosiaco_generic + str(cosiaco_respuesta.json()["id"]) + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+            if comentarios_respuesta.status_code == 200:
+                respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":comentarios_respuesta.json()})
+            elif comentarios_respuesta.status_code == 404:
+                respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":None})
+            else:
+                for value in comentarios_respuesta.json().values():
+                    messages.add_message(request, messages.INFO, value)
+                    respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {})
+        respuesta.set_cookie("auth_token", request.COOKIES.get("auth_token"), httponly=True)
+        return respuesta
+    
+    def post(self, request, *args, **kwargs):
+        cosiaco_respuesta = requests.get(url=obtener_cosiaco_generic + str(kwargs.get("pk")) + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+        if cosiaco_respuesta.status_code != 200:
+            for value in cosiaco_respuesta.json().values():
+                messages.add_message(request, messages.INFO, value)
+                respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {})
+        else:
+            if request.POST.get("ver_mas_comentarios"):
+                comentarios_respuesta = requests.get(url=request.POST.get("ver_mas_comentarios"), headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+            elif request.POST.get("ver_comentarios_anteriores"):
+                comentarios_respuesta = requests.get(url=request.POST.get("ver_comentarios_anteriores"), headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+            else:
+                messages.add_message(request, messages.INFO, "ocurrio un error al oprimir ver mas comentarios o ver comentarios anteriores")
+                respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {})
+
+            if comentarios_respuesta.status_code == 200:
+                respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":comentarios_respuesta.json()})
+            elif comentarios_respuesta.status_code == 404:
+                respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":None})
+            else:
+                for value in comentarios_respuesta.json().values():
+                    messages.add_message(request, messages.INFO, value)
+                    respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {})
+        respuesta.set_cookie("auth_token", request.COOKIES.get("auth_token"), httponly=True)
+        return respuesta
+
+

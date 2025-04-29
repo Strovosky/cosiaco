@@ -1,6 +1,12 @@
-from rest_framework.serializers import ModelSerializer, Serializer, EmailField, CharField, ValidationError, SerializerMethodField, HyperlinkedIdentityField
-from usuario.models import Usuario
+# Django importaciones
 from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator
+
+# Restframework importaciones
+from rest_framework.serializers import ModelSerializer, Serializer, EmailField, CharField, ValidationError, SerializerMethodField, HyperlinkedIdentityField
+
+# Local importaciones
+from usuario.models import Usuario # Esta la puedo cambiar por get_user_model
 from los_cosiacos.models import Cosiaco, Categoria, Estrella, Opinion, Like
 
 
@@ -91,6 +97,7 @@ class UsuarioPerfilSerializador(ModelSerializer):
 class CosiacoSerializador(ModelSerializer):
     """Este será el serializador básico para los cosiacos."""
 
+
     class Meta:
         model = Cosiaco
         fields = [
@@ -151,6 +158,7 @@ class CosiacoSerializadorRelacionados(ModelSerializer):
     
     def get_fecha_creacion(self, obj):
         return f"{obj.fecha_creacion.month}/{obj.fecha_creacion.day}/{obj.fecha_creacion.year}"
+    
 
 
 class CategoriaSerializador(ModelSerializer):
@@ -179,6 +187,9 @@ class EstrellaSerializador(ModelSerializer):
 class OpinionSerializador(ModelSerializer):
     """Este serializador manejara la informacion del modelo Opinion"""
 
+    creador = SerializerMethodField(read_only=True)
+    fecha_creacion = SerializerMethodField(read_only=True)
+
     class Meta:
         model = Opinion
         fields = [
@@ -188,6 +199,14 @@ class OpinionSerializador(ModelSerializer):
             "descripcion",
             "fecha_creacion"
         ]
+    
+    def get_creador(self, obj):
+        # Vamos a mostrar el nombre del usuario.
+        return obj.creador.usuario
+    
+    def get_fecha_creacion(self, obj):
+        # Vamos a mostar la fecha de creación en un formato mas humano.
+        return f"{obj.fecha_creacion.day}/{obj.fecha_creacion.month}/{obj.fecha_creacion.year}"
 
 
 class LikeSerializador(ModelSerializer):
