@@ -137,7 +137,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                         <form method="post" action="">
                           {% csrf_token %}
                           <div class="main-button" >
-                            <button type="post" name="btn_estrellas" value="pressed">Dar Estrellas</button>
+                            <button type="post" name="btn_estrellas" value="{{cosiaco.creador}}">Dar Estrellas</button>
                           </div>
                           <h6>---</h6>
                           <input list="estrellas" required>

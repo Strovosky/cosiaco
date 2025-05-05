@@ -9,6 +9,7 @@ logout_usuario = base_endpoint + "logout_usuario/"
 logout_class_view = base_endpoint + "logout_class_view/"
 
 verificar_token_usuario = base_endpoint + "verificar_token_usuario/"
+verificar_usuario_actual_usuario_estrella = base_endpoint + "verificar_usuario_actual_usuario_estrella/"
 
 crear_usuario = base_endpoint + "crear_usuario/"
 crear_usuario_class_view = base_endpoint + "crear_usuario_class_view/"

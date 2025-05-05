@@ -85,9 +85,10 @@ def obtener_usuario_api_view(request, pk):
 
 
 class ObtenerUsuarioClassView(APIView):
+    """Esta API View dará al usuario actual."""
 
     permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
 
     def get(self, request):
         try:
@@ -98,7 +99,6 @@ class ObtenerUsuarioClassView(APIView):
         if not usuario:
             return Response({"error_usuario":"No existe usuario con ese token"}, status=status.HTTP_404_NOT_FOUND)
         usuario_serializado = UsuarioSerializador(usuario)
-        print("usuario serializador", usuario_serializado.data)
         return Response(usuario_serializado.data, status=status.HTTP_200_OK)
 
 
@@ -366,6 +366,7 @@ class VerificadorTokenYAutenticacion(APIView):
             return Response({"usuario_error":"El usuario no esta autenticado"}, status=status.HTTP_401_UNAUTHORIZED)
         
 
+
 ##### Cosiaco Views #######
 
 class CrearCosiaco(CreateAPIView):
@@ -423,7 +424,7 @@ class ObtenerCosiacoGeneric(RetrieveAPIView):
     serializer_class = CosiacoSerializador
     lookup_field = "pk"
 
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
 
@@ -530,7 +531,7 @@ class ObtenerOpinionCosiaco(RetrieveModelMixin, GenericAPIView):
         
         opiniones_serializadas = self.get_serializer(opiniones_paginadas, many=True)
         return self.get_paginated_response(opiniones_serializadas.data)
-
+    
     def get(self, request, *args, **kwargs):
         """Se va a pasar el pk del cosiaco para encontrar sus comentarios"""
         if kwargs.get("pk"):
@@ -572,3 +573,28 @@ class CrearDestruirLikeGenericView(
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
         
+
+### Vistas Estrellas
+
+class VerificadorUsuarioActualVSUsuarioEstrella(APIView):
+    """
+    Este API View dara True si el usuario actual ya dio una estrella al cosiaco y False si no.
+    """
+
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            token = Token.objects.select_related("user").get(key=request.headers.get("Authorization").split(" ")[-1])
+        except:
+            return Response({"erros token":"No se encontró el token"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            cosiaco_id = kwargs.get("cosiaco_id")
+            cosiaco = get_object_or_404(Cosiaco, pk=int(cosiaco_id))
+            if token.user.id in [estrella.creador.id for estrella in cosiaco.estrella_set.all()]:
+                return Response({"answer":True}, status=status.HTTP_200_OK)
+            return Response({"answer":False}, status=status.HTTP_200_OK)
+
+        
+

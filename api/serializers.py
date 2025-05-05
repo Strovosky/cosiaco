@@ -97,7 +97,6 @@ class UsuarioPerfilSerializador(ModelSerializer):
 class CosiacoSerializador(ModelSerializer):
     """Este será el serializador básico para los cosiacos."""
 
-
     class Meta:
         model = Cosiaco
         fields = [
@@ -123,6 +122,22 @@ class CosiacoSerializador(ModelSerializer):
             cosiaco.categoria.add(categoria)
             cosiaco.save()
         return cosiaco
+
+
+class CosiacoEstrellaUsuario(ModelSerializer):
+    """Este Serializador mostrará todos los usuarios de las estrellas de un cosiaco."""
+
+    usuarios_estrellas = SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Cosiaco
+        fields = [
+            "id",
+            "usuarios_estrellas"
+        ]
+    
+    def get_usuario_estrellas(self, obj):
+        return {f"usuario{estrella.creador.id}":estrella.creador.id for estrella in obj.estrella_set.all()}
 
 
 class CosiacoSerializadorRelacionados(ModelSerializer):

@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import obtener_usuario_api_view, crear_usuario_api_view, obtener_todos_los_usuarios_api_view, actualizar_partial_usuario_api_view, desactivar_usuario_api_view, login_usuario, logout_usuario
-from .views import CrearUsuarioAPIView, ObtenerUsuarioClassView, ObtenerTodosLosUsuariosAPIView, ObtenerTodosLosUsuariosGenericView, ActualizarParcialUsuarioClassView, ActualizarParcialUsuarioGeneriView, DesactivarUsuarioClassView, LoginUsuarioClassView, LogoutClassView, CrearOpinionGenericView, DestruirOpinionGenericView, VerificadorTokenYAutenticacion
+from .views import CrearUsuarioAPIView, ObtenerUsuarioClassView, ObtenerTodosLosUsuariosAPIView, ObtenerTodosLosUsuariosGenericView, ActualizarParcialUsuarioClassView, ActualizarParcialUsuarioGeneriView, DesactivarUsuarioClassView, LoginUsuarioClassView, LogoutClassView, CrearOpinionGenericView, DestruirOpinionGenericView, VerificadorTokenYAutenticacion, VerificadorUsuarioActualVSUsuarioEstrella
 from .views import CrearCosiaco
 from .views import CrearUsuarioGenericAPIView, ObtenerUsuarioGenericView, DesactivarUsuarioGenericView, DestruirCosiacoGeneric, CrearCategoriaGeneric, DestruirCategoriaGeneric, CrearEstrellaGeneric, ObtenerCategoriaGeneric, ObtenerCosiacoGeneric, CrearDestruirLikeGenericView, ObtenerTodasCategoriasGeneric, ObtenerUsuarioPerfilAPIView, ObtenerUltimosCosiacos, ObtenerCosiacosUsurioGeneric, ObtenerOpinionCosiaco
 # RestFramework imports
@@ -30,7 +30,9 @@ urlpatterns = [
     path(route="login_usuario_class_view/", view=LoginUsuarioClassView.as_view(), name="login_usuario_class_view"),
     path(route="logout_usuario/", view=logout_usuario, name="logout_usuario"),
     path(route="logout_class_view/", view=LogoutClassView.as_view(), name="logout_class_view"),
+
     path(route="verificar_token_usuario/", view=VerificadorTokenYAutenticacion.as_view(), name="verificar_token_usuario"),
+    path(route="verificar_usuario_actual_usuario_estrella/<int:cosiaco_id>/", view=VerificadorUsuarioActualVSUsuarioEstrella.as_view(), name="verificar_usuario_actual_usuario_estrella"),
 
     path(route="crear_cosiaco_generic_view/", view=CrearCosiaco.as_view(), name="crear_cosiaco"),
     path(route="destruir_cosiaco_generic_view/<int:pk>/", view=DestruirCosiacoGeneric.as_view(), name="destruir_cosiaco_generic"),

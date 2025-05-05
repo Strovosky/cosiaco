@@ -15,12 +15,14 @@ from api.endpoints import (
     obtener_usuario_class_view,
     obtener_todas_categorias_generic,
     crear_cosiaco_generic,
+    obtener_usuario_class_view,
     obtener_usuario_perfil,
     obtener_ultimos_cosiacos,
     obtener_cosiacos_usuario_generic,
     actualizacion_parcial_usuario_class_view,
     obtener_cosiaco_generic,
-    obtener_opinion_cosiaco_generic)
+    obtener_opinion_cosiaco_generic,
+    verificar_usuario_actual_usuario_estrella)
 
 
 # The Views.
@@ -209,11 +211,21 @@ class DetalleCosiaco(View):
             elif request.POST.get("ver_comentarios_anteriores"):
                 comentarios_respuesta = requests.get(url=request.POST.get("ver_comentarios_anteriores"), headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
             else:
+                comentarios_respuesta = requests.get(url=obtener_opinion_cosiaco_generic + str(cosiaco_respuesta.json()["id"]) + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
                 messages.add_message(request, messages.INFO, "ocurrio un error al oprimir ver mas comentarios o ver comentarios anteriores")
                 respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {})
 
             if comentarios_respuesta.status_code == 200:
-                respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":comentarios_respuesta.json()})
+                if request.POST.get("btn_estrellas"):
+                    verificar_usuario_en_estrella = requests.post(url=verificar_usuario_actual_usuario_estrella + str(cosiaco_respuesta.json()["id"]) + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+                    if verificar_usuario_en_estrella.status_code == 200:
+                        if verificar_usuario_en_estrella.json()["answer"] == True:
+                            messages.add_message(request, messages.INFO, "No se puede calificar estrellas de un cosiaco mas de una vez.")
+                            respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:detalle_cosiaco", args=(cosiaco_respuesta.json()["id"],)))
+                        elif verificar_usuario_en_estrella.json()["answer"] == False:
+                            ### HACER LA LOGICA O USAR ENDPOINT PARA DAR UNA ESTRELLA AL COSIACO
+                    else:
+                        respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":comentarios_respuesta.json()})
             elif comentarios_respuesta.status_code == 404:
                 respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":None})
             else:
