@@ -77,8 +77,7 @@ class Opinion(Model):
         except:
             return 0
 
-    def __str__(self):
-        return f"opinión de {self.creador.usuario}"
+
 
 
 class Like(Model):

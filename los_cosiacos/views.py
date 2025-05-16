@@ -10,19 +10,7 @@ from django.views import View
 
 # Local Imports
 from .decorators import usuario_autenticado_redireccion, not_logged_user
-from api.endpoints import (
-    verificar_token_usuario,
-    obtener_usuario_class_view,
-    obtener_todas_categorias_generic,
-    crear_cosiaco_generic,
-    obtener_usuario_class_view,
-    obtener_usuario_perfil,
-    obtener_ultimos_cosiacos,
-    obtener_cosiacos_usuario_generic,
-    actualizacion_parcial_usuario_class_view,
-    obtener_cosiaco_generic,
-    obtener_opinion_cosiaco_generic,
-    verificar_usuario_actual_usuario_estrella)
+from api.endpoints import *
 
 
 # The Views.
@@ -206,33 +194,46 @@ class DetalleCosiaco(View):
                 messages.add_message(request, messages.INFO, value)
                 respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {})
         else:
+            if request.POST.get("btn_estrellas"):
+                verificar_usuario_en_estrella = requests.get(url=verificar_usuario_actual_usuario_estrella + str(cosiaco_respuesta.json()["id"]) + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+                if verificar_usuario_en_estrella.status_code == 200:
+                    if verificar_usuario_en_estrella.json()["answer"] == True:
+                        messages.add_message(request, messages.INFO, "No se puede calificar estrellas de un cosiaco mas de una vez.")
+                        respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:detalle_cosiaco", args=(cosiaco_respuesta.json()["id"],)))
+                    elif verificar_usuario_en_estrella.json()["answer"] == False:
+                        estrella_respuesta = requests.post(url=crear_estrella_generic, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, data={"creador":session_user_id, "cosiaco":cosiaco_respuesta.json()["id"], "estrella":request.POST.get("estrellas")}, timeout=2)
+                        if estrella_respuesta.status_code == 201:
+                            messages.add_message(request, messages.INFO, f"Se ha calificado el cosiaco {cosiaco_respuesta.json()["nombre"]} con {request.POST.get("estrellas")} estrellas.")
+                        else:
+                            for value in estrella_respuesta.json().values():
+                                messages.add_message(request, messages.INFO, value)
             if request.POST.get("ver_mas_comentarios"):
                 comentarios_respuesta = requests.get(url=request.POST.get("ver_mas_comentarios"), headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+                print(comentarios_respuesta.json())
             elif request.POST.get("ver_comentarios_anteriores"):
                 comentarios_respuesta = requests.get(url=request.POST.get("ver_comentarios_anteriores"), headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
             else:
                 comentarios_respuesta = requests.get(url=obtener_opinion_cosiaco_generic + str(cosiaco_respuesta.json()["id"]) + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
-                messages.add_message(request, messages.INFO, "ocurrio un error al oprimir ver mas comentarios o ver comentarios anteriores")
                 respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {})
-
-            if comentarios_respuesta.status_code == 200:
-                if request.POST.get("btn_estrellas"):
-                    verificar_usuario_en_estrella = requests.post(url=verificar_usuario_actual_usuario_estrella + str(cosiaco_respuesta.json()["id"]) + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
-                    if verificar_usuario_en_estrella.status_code == 200:
-                        if verificar_usuario_en_estrella.json()["answer"] == True:
-                            messages.add_message(request, messages.INFO, "No se puede calificar estrellas de un cosiaco mas de una vez.")
-                            respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:detalle_cosiaco", args=(cosiaco_respuesta.json()["id"],)))
-                        elif verificar_usuario_en_estrella.json()["answer"] == False:
-                            ### HACER LA LOGICA O USAR ENDPOINT PARA DAR UNA ESTRELLA AL COSIACO
-                    else:
-                        respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":comentarios_respuesta.json()})
-            elif comentarios_respuesta.status_code == 404:
-                respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":None})
-            else:
+            if comentarios_respuesta.status_code != 200:
                 for value in comentarios_respuesta.json().values():
                     messages.add_message(request, messages.INFO, value)
-                    respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {})
+                respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":None})
+            else:
+                if request.POST.get("btn_dejar_comentario") == "pressed":
+                    session_user = requests.get(url=obtener_usuario_perfil, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+                    if session_user.status_code != 200:
+                        messages.add_message(request, messages.INFO, session_user.json().values())
+                    else:
+                        crear_comentario_respuesta = requests.post(url=crear_opinion_generic, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, data={"creador":session_user.json()["id"], "cosiaco":cosiaco_respuesta.json()["id"], "descripcion":request.POST.get("comentario")}, timeout=2)
+                        if crear_comentario_respuesta.status_code != 201:
+                            for value in crear_comentario_respuesta.json():
+                                messages.add_message(request, messages.INFO, value)
+                        else:
+                            messages.add_message(request, messages.INFO, f"Se ha dejado un comentario en el cosiaco")
+            respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":comentarios_respuesta.json()})
         respuesta.set_cookie("auth_token", request.COOKIES.get("auth_token"), httponly=True)
         return respuesta
+
 
 

@@ -202,7 +202,7 @@ class EstrellaSerializador(ModelSerializer):
 class OpinionSerializador(ModelSerializer):
     """Este serializador manejara la informacion del modelo Opinion"""
 
-    creador = SerializerMethodField(read_only=True)
+    creador_nombre = SerializerMethodField(read_only=True)
     fecha_creacion = SerializerMethodField(read_only=True)
 
     class Meta:
@@ -210,13 +210,15 @@ class OpinionSerializador(ModelSerializer):
         fields = [
             "id",
             "creador",
+            "creador_nombre",
             "cosiaco",
             "descripcion",
             "fecha_creacion"
         ]
     
-    def get_creador(self, obj):
+    def get_creador_nombre(self, obj):
         # Vamos a mostrar el nombre del usuario.
+        print(obj)
         return obj.creador.usuario
     
     def get_fecha_creacion(self, obj):

@@ -112,6 +112,14 @@ https://templatemo.com/tm-579-cyborg-gaming
             <div class="row">
               <div class="col-lg-12">
                 <h2>{{cosiaco.nombre}}</h2>
+                {% if messages %}
+                  {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+                {% endif %}
+                <p></p>
               </div>
               <div class="col-lg-12">
                 <div class="content">
@@ -174,7 +182,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                           {% else %}
                             {% for comentario in comentarios.results %}
                             <p>{{comentario.descripcion}}</p>
-                            <p>{{comentario.creador.capitalize}}</p>
+                            <p>{{comentario.creador_nombre.capitalize}}</p>
                             <p>{{comentario.fecha_creacion}}</p>
                             {% endfor %}
                           <p></p>
@@ -191,16 +199,18 @@ https://templatemo.com/tm-579-cyborg-gaming
                             {% endif %}
                           </form>
                           {% endif %}
-                          <p></p>
-                          <textarea name="comentario" id="commentario"></textarea>
                         </div>
                       </div>
                     </div>
-                    <div class="col-lg-12">
-                      <div class="main-border-button">
-                        <a href="#">Dejar Comentario</a>
+                    <form method="post" action="">
+                      {% csrf_token %}
+                      <textarea name="comentario"></textarea>
+                      <div class="col-lg-12">
+                        <div class="main-border-button">
+                          <button type="submit" name="btn_dejar_comentario" value="pressed">Dejar Comentario</button>
+                        </div>
                       </div>
-                    </div>
+                    </form>
                   </div>
                 </div>
               </div>
