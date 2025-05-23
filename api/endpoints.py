@@ -36,9 +36,11 @@ desactivar_usuario_generic_view = base_endpoint + "desactivar_usuario_generic_vi
 ##### Cosiaco Endpoints #####
 crear_cosiaco_generic = base_endpoint + "crear_cosiaco_generic_view/"
 destruir_cosiaco_generic = base_endpoint + "destruir_cosiaco_generic_view/"
+obtener_cosiaco_por_nombre = base_endpoint + "obtener_cosiaco_por_nombre/"
 obtener_cosiaco_generic = base_endpoint + "obtener_cosiaco_generic/"
 obtener_ultimos_cosiacos = base_endpoint + "obtener_ultimos_cosiacos/"
 obtener_cosiacos_usuario_generic = base_endpoint + "obtener_cosiacos_usuario_generic/"
+obtener_cosiacos_populares = base_endpoint + "obtener_cosiacos_populares/"
 
 ##### Categoria Endpionts ###
 crear_categoria_generic = base_endpoint + "crear_categoria_generic/"

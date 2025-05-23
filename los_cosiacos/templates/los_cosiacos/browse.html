@@ -1,9 +1,117 @@
 {% extends "los_cosiacos/index.html" %}
+{% load static %}
+
 
 {% block banner_start %}
 {% endblock banner_start %}
 
+{% block search_bar %}
+                    <!-- ***** Search End ***** -->                  
+                    <div class="search-input">
+                      <form id="search" action="{% url 'los_cosiacos_urls:browse' %}" method="post">
+                        {% csrf_token %}
+                        <input type="text" placeholder="Type Something" id='searchText' name="buscar_c" onkeypress="handle" />
+                        <i class="fa fa-search"></i>
+                      </form>
+                    </div>
+                    <!-- ***** Search End ***** -->
+{% endblock search_bar %}
+{% block menu_start %}
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li><a href="{% url 'los_cosiacos_urls:index' %}">Inicio</a></li>
+                        <li><a href="{% url 'los_cosiacos_urls:browse' %}" class="active">Buscar</a></li>
+                        <li><a href="{% url 'usuario_urls:logout' %}">Salir</a></li>
+                        <li><a href="{% url 'los_cosiacos_urls:perfil' %}">Perfil <img src="{% static 'los_cosiacos/images/profile-header.jpg' %}" alt=""></a></li>
+                    </ul>   
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+{% endblock menu_start %}
 
 
+{% block cosiacos_respuesta %}
+  {% if cosiacos_busqueda %}
+          <!-- ***** Most Popular Start ***** -->
+          {% for message in messages %}
+          <div class="col-lg-12">
+            <div class="alert alert-success" role="alert">
+              {{message}}
+            </div>
+          {% endfor %}
+          <div class="most-popular">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="heading-section">
+                  <h4><em>Resultado de</em> Cosiacos</h4>
+                </div>
+                <div class="row">
+                  {% for cosiaco in cosiacos_busqueda.results %}
+                  <div class="col-lg-3 col-sm-6">
+                    <div class="item">
+                      <img src="{% static 'los_cosiacos/images/popular-01.jpg' %}" alt="">
+                      <h4>{{cosiaco.nombre.capitalize}}<br><span>{{cosiaco.creador.usuario.capitalize}}</span></h4>
+                      <ul>
+                        {% if not cosiaco.mostrar_estrellas %}
+                        <li><i class="fa fa-star"></i> 0</li>
+                        {% else %}
+                        <li><i class="fa fa-star"></i> {{cosiaco.mostrar_estrellas}}</li>
+                        {% endif %}
+                        <li><i class="fa fa-download"></i> <a href="{% url 'los_cosiacos_urls:detalle_cosiaco' cosiaco.id %}">Ver</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                  {% endfor %}
+                  <div class="col-lg-12">
+                    <div class="main-button">
+                      <a href="{% url 'los_cosiacos_urls:browse' %}">Buscar Cosiaco</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ***** Most Popular End ***** -->
+  {% endif %}
+{% endblock cosiacos_respuesta %}
+
+
+          {% block most_popular_now %}
+          <!-- ***** Most Popular Start ***** -->
+          <div class="most-popular">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="heading-section">
+                  <h4><em>Cosiacos</em> Más Populares</h4>
+                </div>
+                <div class="row">
+                  {% for cosiaco in cosiacos_populares %}
+                  <div class="col-lg-3 col-sm-6">
+                    <div class="item">
+                      <img src="{% static 'los_cosiacos/images/popular-01.jpg' %}" alt="">
+                      <h4>{{cosiaco.nombre.capitalize}}<br><span>{{cosiaco.creador.usuario.capitalize}}</span></h4>
+                      <ul>
+                        {% if not cosiaco.mostrar_estrellas %}
+                        <li><i class="fa fa-star"></i> 0</li>
+                        {% else %}
+                        <li><i class="fa fa-star"></i> {{cosiaco.mostrar_estrellas}}</li>
+                        {% endif %}
+                        <li><i class="fa fa-download"></i> <a href="{% url 'los_cosiacos_urls:detalle_cosiaco' cosiaco.id %}">Ver</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                  {% endfor %}
+                  <div class="col-lg-12">
+                    <div class="main-button">
+                      <a href="{% url 'los_cosiacos_urls:browse' %}">Buscar Cosiaco</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ***** Most Popular End ***** -->
+          {% endblock most_popular_now %}
 
 

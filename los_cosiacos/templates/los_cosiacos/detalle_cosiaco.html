@@ -57,18 +57,10 @@ https://templatemo.com/tm-579-cyborg-gaming
                         <img src="{% static 'los_cosiacos/images/logo.png' %}" alt="">
                     </a>
                     <!-- ***** Logo End ***** -->
-                    <!-- ***** Search End ***** -->
-                    <div class="search-input">
-                      <form id="search" action="#">
-                        <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                        <i class="fa fa-search"></i>
-                      </form>
-                    </div>
-                    <!-- ***** Search End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
                         <li><a href="{% url 'los_cosiacos_urls:index' %}">Inicio</a></li>
-                        <li><a href="{% url 'los_cosiacos_urls:browse' %}" class="active">Buscar</a></li>
+                        <li><a href="{% url 'los_cosiacos_urls:browse' %}">Buscar</a></li>
                         <li><a href="{% url 'usuario_urls:logout' %}">Salir</a></li>
                         <li><a href="{% url 'los_cosiacos_urls:perfil' %}">Perfil<img src="{% static 'los_cosiacos/images/profile-header.jpg' %}" alt=""></a></li>
                     </ul>   
@@ -188,11 +180,11 @@ https://templatemo.com/tm-579-cyborg-gaming
                           <p></p>
                           <form method="post" action="">
                             {% csrf_token %}
-                            {% if comentarios.next != None %}
-                              <button type="submit" name="ver_mas_comentarios" value="{{comentarios.next}}">Ver Más Comentarios</button>
-                            {% endif %}
                             {% if comentarios.previous != None %}
                               <button type="submit" name="ver_comentarios_anteriores" value="{{comentarios.previous}}">Ver Comentarios Anteriores</button>
+                            {% endif %}
+                            {% if comentarios.next != None %}
+                              <button type="submit" name="ver_mas_comentarios" value="{{comentarios.next}}">Ver Más Comentarios</button>
                             {% endif %}
                             {% if not comentarios.next and not comentarios.previous %}
                               <p></p>
@@ -217,78 +209,6 @@ https://templatemo.com/tm-579-cyborg-gaming
             </div>
           </div>
           <!-- ***** Details End ***** -->
-
-          <!-- ***** Other Start ***** -->
-          <div class="other-games">
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="heading-section">
-                  <h4><em>Other Related</em> Games</h4>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="item">
-                  <img src="{% static 'los_cosiacos/images/game-01.jpg' %}" alt="" class="templatemo-item">
-                  <h4>Dota 2</h4><span>Sandbox</span>
-                  <ul>
-                    <li><i class="fa fa-star"></i> 4.8</li>
-                    <li><i class="fa fa-download"></i> 2.3M</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="item">
-                  <img src="{% static 'los_cosiacos/images/game-02.jpg' %}" alt="" class="templatemo-item">
-                  <h4>Dota 2</h4><span>Sandbox</span>
-                  <ul>
-                    <li><i class="fa fa-star"></i> 4.8</li>
-                    <li><i class="fa fa-download"></i> 2.3M</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="item">
-                  <img src="{% static 'los_cosiacos/images/game-03.jpg' %}" alt="" class="templatemo-item">
-                  <h4>Dota 2</h4><span>Sandbox</span>
-                  <ul>
-                    <li><i class="fa fa-star"></i> 4.8</li>
-                    <li><i class="fa fa-download"></i> 2.3M</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="item">
-                  <img src="{% static 'los_cosiacos/images/game-02.jpg' %}" alt="" class="templatemo-item">
-                  <h4>Dota 2</h4><span>Sandbox</span>
-                  <ul>
-                    <li><i class="fa fa-star"></i> 4.8</li>
-                    <li><i class="fa fa-download"></i> 2.3M</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="item">
-                  <img src="{% static 'los_cosiacos/images/game-03.jpg' %}" alt="" class="templatemo-item">
-                  <h4>Dota 2</h4><span>Sandbox</span>
-                  <ul>
-                    <li><i class="fa fa-star"></i> 4.8</li>
-                    <li><i class="fa fa-download"></i> 2.3M</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="item">
-                  <img src="{% static 'los_cosiacos/images/game-01.jpg' %}" alt="" class="templatemo-item">
-                  <h4>Dota 2</h4><span>Sandbox</span>
-                  <ul>
-                    <li><i class="fa fa-star"></i> 4.8</li>
-                    <li><i class="fa fa-download"></i> 2.3M</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- ***** Other End ***** -->
 
         </div>
       </div>

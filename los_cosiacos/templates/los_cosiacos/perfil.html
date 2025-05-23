@@ -71,7 +71,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <ul class="nav">
                         <li><a href="{% url 'los_cosiacos_urls:index' %}">Inicio</a></li>
                         <li><a href="{% url 'los_cosiacos_urls:browse' %}">Buscar</a></li>
-                        <li><a href="{% url 'usuario_urls:logout' %}">Logout</a></li>
+                        <li><a href="{% url 'usuario_urls:logout' %}">Salir</a></li>
                         <li><a href="{% url 'los_cosiacos_urls:perfil' %}" class="active">Perfil <img src="{% static 'los_cosiacos/images/profile-header.jpg' %}" alt=""></a></li>
                     </ul>   
                     <a class='menu-trigger'>
@@ -222,7 +222,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                   <li><h4>Fecha de creación</h4><span>{{cosiaco.fecha_creacion}}</span></li>
                   <li><h4>Estrellas</h4><span>{{cosiaco.mostrar_estrellas}}</span></li>
                   <li><h4>Comentarios</h4><span>Pendiente</span></li>
-                  <li><div class="main-border-button border-no-active"><a href="#">Ver</a></div></li>
+                  <li><div class="main-border-button border-no-active"><a href="{% url 'los_cosiacos_urls:detalle_cosiaco' cosiaco.id %}">Ver</a></div></li>
                 </ul>
                 {% endfor %}
               </div>

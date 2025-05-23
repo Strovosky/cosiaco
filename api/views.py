@@ -1,6 +1,6 @@
 
 # Django Imports
-from django.db.models import Q
+from django.db.models import Q, Avg
 from django.shortcuts import render, get_object_or_404
 
 # Local Imports
@@ -386,6 +386,15 @@ class DestruirCosiacoGeneric(DestroyAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class ObtenerCosiacosPopulares(ListAPIView):
+    """
+    Esta vista mostrará los ultimos 4 cosiacos más populares.
+    """
+    queryset = Cosiaco.objects.annotate(promedio_estrellas=Avg("estrella__numero")).order_by("promedio_estrellas").reverse()[:4]
+    serializer_class = CosiacoSerializadorRelacionados
+    
+
+
 class ObtenerCosiacosUsurioGeneric(ListModelMixin, RetrieveModelMixin, GenericAPIView):
     """
     Esta vista dará los cociacos paginados pertenecientes al usuario autenticado.
@@ -428,6 +437,26 @@ class ObtenerCosiacoGeneric(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class ObtenerCosiacoPorNombreGeneric(ListAPIView):
+    """
+    Ésta vista obtendrá una lista de cosiacos por el nombre que se le pase.
+    """
+    
+    serializer_class = CosiacoSerializador
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    pagination_class = CosiacoPerfilPagination
+
+    def get_queryset(self):
+        nombre = self.kwargs.get("nombre")
+        print(nombre)
+        if not nombre:
+            queryset = []
+        else:
+            queryset = Cosiaco.objects.filter(nombre__icontains=nombre).order_by("fecha_creacion").reverse()
+        return queryset
+
+
 class ObtenerUltimosCosiacos(ListAPIView):
     """
     Este API View entregará los ultimos 10 cosiacos
@@ -435,9 +464,6 @@ class ObtenerUltimosCosiacos(ListAPIView):
 
     queryset = Cosiaco.objects.order_by("fecha_creacion").reverse()[:4]
     serializer_class = CosiacoSerializadorRelacionados
-
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
-    permission_classes = [IsAuthenticated]
 
 
 class CrearCategoriaGeneric(CreateAPIView):

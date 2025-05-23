@@ -25,6 +25,16 @@ class IndexView(View):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        ultimos_cuatro_cosiacos_respuesta = requests.get(url=obtener_ultimos_cosiacos, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+        cosiacos_populares_respuesta = requests.get(url=obtener_cosiacos_populares, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+        if ultimos_cuatro_cosiacos_respuesta.status_code == 200 and cosiacos_populares_respuesta.status_code == 200:
+            return render(request, "los_cosiacos/index.html", {"ultimos_cosiacos":ultimos_cuatro_cosiacos_respuesta.json(), "cosiacos_populares":cosiacos_populares_respuesta.json()})
+        elif ultimos_cuatro_cosiacos_respuesta.status_code != 200:
+            messages.add_message(request, messages.INFO, ultimos_cuatro_cosiacos_respuesta.json().values())
+            return render(request, "los_cosiacos/index.html", {})
+        elif cosiacos_populares_respuesta.status_code != 200:
+            messages.add_message(request, messages.INFO, cosiacos_populares_respuesta.json().values())
+            return render(request, "los_cosiacos/index.html", {})
         return render(request, "los_cosiacos/index.html", {})
 
 class BrowseView(View):
@@ -38,7 +48,46 @@ class BrowseView(View):
 
 
     def get(self, request, *args, **kwargs):
+        ultimos_cosiacos = requests.get(url=obtener_ultimos_cosiacos, timeout=2)
+        cosiacos_populares = requests.get(url=obtener_cosiacos_populares, timeout=2)
+        if ultimos_cosiacos.status_code == 200 and cosiacos_populares.status_code == 200:
+            return render(request, "los_cosiacos/browse.html", {"ultimos_cosiacos":ultimos_cosiacos.json(), "cosiacos_populares":cosiacos_populares.json()})
+        elif ultimos_cosiacos.status_code != 200:
+            messages.add_message(request, messages.INFO, ultimos_cosiacos.json().values())
+            return render(request, "los_cosiacos/browse.html", {})
+        elif cosiacos_populares.status_code != 200:
+            messages.add_message(request, messages.INFO, cosiacos_populares.json().values())
+            return render(request, "los_cosiacos/browse.html", {})
         return render(request, "los_cosiacos/browse.html")
+    
+    def post(self, request, *args, **kwargs):
+        ultimos_cosiacos = requests.get(url=obtener_ultimos_cosiacos, timeout=2)
+        cosiacos_populares = requests.get(url=obtener_cosiacos_populares, timeout=2)
+        if ultimos_cosiacos.status_code != 200:
+            for value in ultimos_cosiacos.json().values():
+                messages.add_message(request, messages.INFO, value)
+            return render(request, "los_cosiacos/browse.html", {"ultimos_cosiacos":[], "cosiacos_populares":[], "cosiaco":[], "cosiacos_busqueda":None})
+        if cosiacos_populares.status_code != 200:
+            for value in cosiacos_populares.json().values():
+                messages.add_message(request, messages.INFO, value)
+            return render(request, "los_cosiacos/browse.html", {"ultimos_cosiacos":[], "cosiacos_populares":[], "cosiaco":[], "cosiacos_busqueda":None})
+        if ultimos_cosiacos.status_code == 200 and cosiacos_populares.status_code == 200:
+            if request.POST.get("buscar_c"):
+                cosiaco_respuesta = requests.get(url=obtener_cosiaco_por_nombre + request.POST.get("buscar_c") + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+                if cosiaco_respuesta.status_code == 200:
+                    if request.POST.get("buscar_c") != "":
+                        cosiacos_busqueda = requests.get(url=obtener_cosiaco_por_nombre + request.POST.get("buscar_c") + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+                        if cosiacos_busqueda.status_code == 200:
+                            return render(request, "los_cosiacos/browse.html", {"ultimos_cosiacos":ultimos_cosiacos.json(), "cosiacos_populares":cosiacos_populares.json(), "cosiaco":cosiaco_respuesta.json(), "cosiacos_busqueda":cosiacos_busqueda.json()})
+                        else:
+                            for value in cosiacos_busqueda.json().values():
+                                messages.add_message(request, messages.INFO, value)
+                    return render(request, "los_cosiacos/browse.html", {"ultimos_cosiacos":ultimos_cosiacos.json(), "cosiacos_populares":cosiacos_populares.json(), "cosiaco":cosiaco_respuesta.json()})
+                else:
+                    for value in cosiaco_respuesta.json().values():
+                        messages.add_message(request, messages.INFO, value)
+                    return render(request, "los_cosiacos/browse.html", {"ultimos_cosiacos": [], "cosiacos_populares": []})
+        return render(request, "los_cosiacos/browse.html", {"ultimos_cosiacos":ultimos_cosiacos.json(), "cosiacos_populares":cosiacos_populares.json(), "cosiaco":[]})
 
 class VistaPeril(View):
     """
@@ -189,7 +238,11 @@ class DetalleCosiaco(View):
     
     def post(self, request, *args, **kwargs):
         cosiaco_respuesta = requests.get(url=obtener_cosiaco_generic + str(kwargs.get("pk")) + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
-        if cosiaco_respuesta.status_code != 200:
+        session_user = requests.get(url=obtener_usuario_perfil, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+        if session_user.status_code != 200:
+            messages.add_message(request, messages.INFO, session_user.json().values())
+            respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:detalle_cosiaco", args=(cosiaco_respuesta.json()["id"],)))
+        elif cosiaco_respuesta.status_code != 200:
             for value in cosiaco_respuesta.json().values():
                 messages.add_message(request, messages.INFO, value)
                 respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {})
@@ -201,7 +254,7 @@ class DetalleCosiaco(View):
                         messages.add_message(request, messages.INFO, "No se puede calificar estrellas de un cosiaco mas de una vez.")
                         respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:detalle_cosiaco", args=(cosiaco_respuesta.json()["id"],)))
                     elif verificar_usuario_en_estrella.json()["answer"] == False:
-                        estrella_respuesta = requests.post(url=crear_estrella_generic, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, data={"creador":session_user_id, "cosiaco":cosiaco_respuesta.json()["id"], "estrella":request.POST.get("estrellas")}, timeout=2)
+                        estrella_respuesta = requests.post(url=crear_estrella_generic, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, data={"creador":session_user.json()["id"], "cosiaco":cosiaco_respuesta.json()["id"], "estrella":request.POST.get("estrellas")}, timeout=2)
                         if estrella_respuesta.status_code == 201:
                             messages.add_message(request, messages.INFO, f"Se ha calificado el cosiaco {cosiaco_respuesta.json()["nombre"]} con {request.POST.get("estrellas")} estrellas.")
                         else:
@@ -209,7 +262,6 @@ class DetalleCosiaco(View):
                                 messages.add_message(request, messages.INFO, value)
             if request.POST.get("ver_mas_comentarios"):
                 comentarios_respuesta = requests.get(url=request.POST.get("ver_mas_comentarios"), headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
-                print(comentarios_respuesta.json())
             elif request.POST.get("ver_comentarios_anteriores"):
                 comentarios_respuesta = requests.get(url=request.POST.get("ver_comentarios_anteriores"), headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
             else:
@@ -221,16 +273,12 @@ class DetalleCosiaco(View):
                 respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":None})
             else:
                 if request.POST.get("btn_dejar_comentario") == "pressed":
-                    session_user = requests.get(url=obtener_usuario_perfil, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
-                    if session_user.status_code != 200:
-                        messages.add_message(request, messages.INFO, session_user.json().values())
+                    crear_comentario_respuesta = requests.post(url=crear_opinion_generic, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, data={"creador":session_user.json()["id"], "cosiaco":cosiaco_respuesta.json()["id"], "descripcion":request.POST.get("comentario")}, timeout=2)
+                    if crear_comentario_respuesta.status_code != 201:
+                        for value in crear_comentario_respuesta.json():
+                            messages.add_message(request, messages.INFO, value)
                     else:
-                        crear_comentario_respuesta = requests.post(url=crear_opinion_generic, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, data={"creador":session_user.json()["id"], "cosiaco":cosiaco_respuesta.json()["id"], "descripcion":request.POST.get("comentario")}, timeout=2)
-                        if crear_comentario_respuesta.status_code != 201:
-                            for value in crear_comentario_respuesta.json():
-                                messages.add_message(request, messages.INFO, value)
-                        else:
-                            messages.add_message(request, messages.INFO, f"Se ha dejado un comentario en el cosiaco")
+                        messages.add_message(request, messages.INFO, f"Se ha dejado un comentario en el cosiaco")
             respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":comentarios_respuesta.json()})
         respuesta.set_cookie("auth_token", request.COOKIES.get("auth_token"), httponly=True)
         return respuesta

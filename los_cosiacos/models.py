@@ -32,6 +32,7 @@ class Cosiaco(Model):
         except:
             return None
 
+
     def __str__(self):
         return self.nombre
 
