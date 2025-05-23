@@ -254,7 +254,7 @@ class DetalleCosiaco(View):
                         messages.add_message(request, messages.INFO, "No se puede calificar estrellas de un cosiaco mas de una vez.")
                         respuesta = HttpResponseRedirect(reverse("los_cosiacos_urls:detalle_cosiaco", args=(cosiaco_respuesta.json()["id"],)))
                     elif verificar_usuario_en_estrella.json()["answer"] == False:
-                        estrella_respuesta = requests.post(url=crear_estrella_generic, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, data={"creador":session_user.json()["id"], "cosiaco":cosiaco_respuesta.json()["id"], "estrella":request.POST.get("estrellas")}, timeout=2)
+                        estrella_respuesta = requests.post(url=crear_estrella_generic, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, data={"creador":session_user.json()["id"], "cosiaco":cosiaco_respuesta.json()["id"], "numero":request.POST.get("estrellas")}, timeout=2)
                         if estrella_respuesta.status_code == 201:
                             messages.add_message(request, messages.INFO, f"Se ha calificado el cosiaco {cosiaco_respuesta.json()["nombre"]} con {request.POST.get("estrellas")} estrellas.")
                         else:
