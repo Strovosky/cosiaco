@@ -265,13 +265,6 @@ class DetalleCosiaco(View):
             elif request.POST.get("ver_comentarios_anteriores"):
                 comentarios_respuesta = requests.get(url=request.POST.get("ver_comentarios_anteriores"), headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
             else:
-                comentarios_respuesta = requests.get(url=obtener_opinion_cosiaco_generic + str(cosiaco_respuesta.json()["id"]) + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
-                respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {})
-            if comentarios_respuesta.status_code != 200:
-                for value in comentarios_respuesta.json().values():
-                    messages.add_message(request, messages.INFO, value)
-                respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":None})
-            else:
                 if request.POST.get("btn_dejar_comentario") == "pressed":
                     crear_comentario_respuesta = requests.post(url=crear_opinion_generic, headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, data={"creador":session_user.json()["id"], "cosiaco":cosiaco_respuesta.json()["id"], "descripcion":request.POST.get("comentario")}, timeout=2)
                     if crear_comentario_respuesta.status_code != 201:
@@ -279,6 +272,11 @@ class DetalleCosiaco(View):
                             messages.add_message(request, messages.INFO, value)
                     else:
                         messages.add_message(request, messages.INFO, f"Se ha dejado un comentario en el cosiaco")
+                comentarios_respuesta = requests.get(url=obtener_opinion_cosiaco_generic + str(cosiaco_respuesta.json()["id"]) + "/", headers={"Authorization":f"Token {request.COOKIES.get("auth_token")}"}, timeout=2)
+                if comentarios_respuesta.status_code != 200:
+                    for value in comentarios_respuesta.json().values():
+                        messages.add_message(request, messages.INFO, value)
+                    respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":None})
             respuesta = render(request, "los_cosiacos/detalle_cosiaco.html", {"cosiaco":cosiaco_respuesta.json(), "comentarios":comentarios_respuesta.json()})
         respuesta.set_cookie("auth_token", request.COOKIES.get("auth_token"), httponly=True)
         return respuesta
